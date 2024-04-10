@@ -6,3 +6,11 @@ export type LinkComponentProps = {
     onLinkEdit : (newUrl : string) => void;
     onLinkDelete : () => void;
 }
+
+export type SectionHeaderProps = {
+    sectionTitle : string;
+    editSectionName : boolean;
+    handleEditSectionTitle : (newStr : string) => void;
+    handleEditSectionClose : () => void;
+    handleToggleMinimize : () => void;
+}

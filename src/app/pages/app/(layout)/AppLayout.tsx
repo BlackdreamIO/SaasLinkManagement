@@ -12,9 +12,9 @@ export default function AppLayout() {
     const [items, setItems] = useState(initialItems);
 
     return (
-        <div className='space-y-5'>
+        <div className='w-full space-y-5'>
             <AppNavbarFilter />
-            <Reorder.Group axis="y" onReorder={setItems} values={items} className='space-y-5'>
+            <Reorder.Group axis="y" onReorder={setItems} values={items} className='m-auto min-h-screen max-h-auto flex flex-col items-center justify-start space-y-5'>
                 {
                     items.map((item) => (
                         <Section sectionTitle={item} key={item} />

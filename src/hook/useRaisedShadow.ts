@@ -1,7 +1,7 @@
 import { animate, MotionValue, useMotionValue } from "framer-motion";
 import { useEffect } from "react";
 
-const inactiveBorder = "#404040";
+const inactiveBorder = "0";
 
 export function useRaisedShadow(value: MotionValue<number>) 
 {
@@ -14,7 +14,7 @@ export function useRaisedShadow(value: MotionValue<number>)
           if (latest !== 0) {
               isActive = true;
               if (isActive !== wasActive) {
-                animate(border, "rgba(250,250,250)");
+                animate(border, "1");
               }
           } 
           else 
