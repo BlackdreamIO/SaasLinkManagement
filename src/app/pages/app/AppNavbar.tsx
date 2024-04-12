@@ -29,6 +29,8 @@ import {
 
 export default function AppNavbar() 
 {
+    const menuItemsStyle = `hover:!bg-blue-700 hover:!text-white`
+
     return (
         <Box className="dark:bg-black bg-neutral-200 shadow-lg max-sm:bg-neutral-200 p-2 
         relative inset-x-0 top-0 z-30 mx-auto w-full border dark:border-neutral-600 border-gray-300 max-w-3xl rounded-xl">
@@ -37,46 +39,46 @@ export default function AppNavbar()
                 <Menubar className='bg-transparent border-transparent'>
                     <MenubarMenu>
                         <MenubarTrigger className='text-neutral-500 dark:hover:text-white hover:text-black'>File</MenubarTrigger>
-                        <MenubarContent className='bg-black mt-2'>
-                            <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'> New Section </MenubarItem>
-                            <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'> New Link </MenubarItem>
-                            <MenubarItem disabled className='dark:hover:bg-blue-700 hover:bg-blue-700'>New Incognito Section</MenubarItem>
+                        <MenubarContent className='dark:bg-black mt-2'>
+                            <MenubarItem className={menuItemsStyle}> New Section </MenubarItem>
+                            <MenubarItem className={menuItemsStyle}> New Link </MenubarItem>
+                            <MenubarItem disabled className={menuItemsStyle}>New Incognito Section</MenubarItem>
                             <MenubarSeparator />
                             <MenubarSub>
-                                <MenubarSubTrigger className='dark:hover:bg-blue-700 hover:bg-blue-700'>Export As</MenubarSubTrigger>
-                                <MenubarSubContent className='bg-black'>
-                                    <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>TXT</MenubarItem>
-                                    <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>JSON</MenubarItem>
-                                    <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>PNG</MenubarItem>
+                                <MenubarSubTrigger className={menuItemsStyle}>Export As</MenubarSubTrigger>
+                                <MenubarSubContent className='dark:bg-black'>
+                                    <MenubarItem className={menuItemsStyle}>TXT</MenubarItem>
+                                    <MenubarItem className={menuItemsStyle}>JSON</MenubarItem>
+                                    <MenubarItem className={menuItemsStyle}>PNG</MenubarItem>
                                 </MenubarSubContent>
                             </MenubarSub>
                             <MenubarSeparator />
-                            <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'> Save </MenubarItem>
+                            <MenubarItem className={menuItemsStyle}> Save </MenubarItem>
                         </MenubarContent>
                     </MenubarMenu>
 
                     <MenubarMenu>
                         <MenubarTrigger className='text-neutral-500 dark:hover:text-white hover:text-black'>View</MenubarTrigger>
-                        <MenubarContent className='bg-black mt-2'>
-                            <MenubarCheckboxItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>Zoom In +</MenubarCheckboxItem>
-                            <MenubarCheckboxItem className='dark:hover:bg-blue-700 hover:bg-blue-700'> Zoom Out - </MenubarCheckboxItem>
+                        <MenubarContent className='dark:bg-black mt-2'>
+                            <MenubarCheckboxItem className={menuItemsStyle}>Zoom In +</MenubarCheckboxItem>
+                            <MenubarCheckboxItem className={menuItemsStyle}> Zoom Out - </MenubarCheckboxItem>
                             <MenubarSeparator />
-                            <MenubarItem inset className='dark:hover:bg-blue-700 hover:bg-blue-700'> Reload </MenubarItem>
+                            <MenubarItem inset className={menuItemsStyle}> Reload </MenubarItem>
                             <MenubarSeparator />
-                            <MenubarItem inset className='dark:hover:bg-blue-700 hover:bg-blue-700'>Toggle Fullscreen</MenubarItem>
+                            <MenubarItem inset className={menuItemsStyle}>Toggle Fullscreen</MenubarItem>
                             <MenubarSeparator />
                         </MenubarContent>
                     </MenubarMenu>
 
                     <MenubarMenu>
                         <MenubarTrigger className='text-neutral-500 dark:hover:text-white hover:text-black'>Preference</MenubarTrigger>
-                        <MenubarContent className='bg-black mt-2'>
+                        <MenubarContent className='dark:bg-black mt-2'>
                             <MenubarSub>
-                                <MenubarSubTrigger className='dark:hover:bg-blue-700 hover:bg-blue-700'>Theme</MenubarSubTrigger>
-                                <MenubarSubContent className='bg-black'>
-                                    <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>Light</MenubarItem>
-                                    <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>Dark</MenubarItem>
-                                    <MenubarItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>System</MenubarItem>
+                                <MenubarSubTrigger className={menuItemsStyle}>Theme</MenubarSubTrigger>
+                                <MenubarSubContent className='dark:bg-black'>
+                                    <MenubarItem className={menuItemsStyle}>Light</MenubarItem>
+                                    <MenubarItem className={menuItemsStyle}>Dark</MenubarItem>
+                                    <MenubarItem className={menuItemsStyle}>System</MenubarItem>
                                 </MenubarSubContent>
                             </MenubarSub>
                         </MenubarContent>
@@ -98,8 +100,8 @@ export default function AppNavbar()
                     <DropdownMenuContent className='dark:bg-black mt-2'>
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>Log Out</DropdownMenuItem>
-                        <DropdownMenuItem className='dark:hover:bg-blue-700 hover:bg-blue-700'>Setting</DropdownMenuItem>
+                        <DropdownMenuItem className={menuItemsStyle}>Log Out</DropdownMenuItem>
+                        <DropdownMenuItem className={menuItemsStyle}>Setting</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
                 

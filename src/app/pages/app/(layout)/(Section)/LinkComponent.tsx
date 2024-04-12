@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import { LinkComponentProps } from "@/types/types";
+import { SectionItemProps } from "@/types/types";
 
 import { Box, Text, HStack} from "@chakra-ui/react";
 import {
@@ -20,10 +20,18 @@ import { Input } from "@/components/ui/input";
 
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoPencil } from "react-icons/io5";
+import { LinkItemScheme } from "@/scheme/LinkSection";
+import { RiDeleteBin7Line } from "react-icons/ri";
 
-export default function LinkComponent(props : LinkComponentProps) 
+interface SectionItemInterfaceProps extends LinkItemScheme {
+    onLinkTitleEdit : (newTitle : string) => void;
+    onLinkUrlEdit : (newUrl: string) => void;
+    onLinkDelete : (id : string) => void;
+}
+
+export default function SectionItem(props : SectionItemInterfaceProps) 
 {
-    const { url, title, onTitleEdit, onLinkEdit, onLinkDelete  } = props;
+    const { title, link, onLinkTitleEdit, onLinkUrlEdit, onLinkDelete } = props;
 
     const [editTitle, setEditTitle] = useState(false);
     const [editUrl, setEditUrl] = useState(false);
@@ -33,14 +41,14 @@ export default function LinkComponent(props : LinkComponentProps)
 
     const handleEditUrl = () => { 
         if(newUrl.length > 2) {
-            onLinkEdit?.(newUrl);
+            onLinkUrlEdit?.(newUrl);
             setEditUrl(false);
         }
     }
     
     const handleEditTitle = () => { 
         if(newTitle.length > 2) {
-            onTitleEdit?.(newTitle);
+            onLinkTitleEdit?.(newTitle);
             setEditTitle(false);
         }
     }
@@ -48,10 +56,10 @@ export default function LinkComponent(props : LinkComponentProps)
     const handleEditUrlClose = () => setEditUrl(false);
     const handleEditTitleClose = () => setEditTitle(false);
 
-    const handleDeleteLinkItem = () => onLinkDelete?.();
+    const handleDeleteLinkItem = () => onLinkDelete?.('2');
 
     return (
-        <Box className="bg-neutral-900 p-3 w-full rounded-lg border border-transparent hover:border-neutral-700">
+        <Box className="dark:bg-neutral-900 bg-neutral-100 shadow-md p-3 w-full rounded-lg border border-transparent hover:border-neutral-700">
             <HStack justify={'space-between'} className="items-center max-sm:!flex-col space-x-5">
                 
                 <Box tabIndex={1} className="max-w-6/12 w-6/12 max-sm:max-w-full max-sm:w-full overflow-hidden group">
@@ -83,7 +91,7 @@ export default function LinkComponent(props : LinkComponentProps)
                         editUrl ?
                         (
                             <HStack tabIndex={1}>
-                                <Input placeholder={url} onChange={(e) => setNewUrl(e.target.value)} className="bg-transparent" />
+                                <Input placeholder={link} onChange={(e) => setNewUrl(e.target.value)} className="bg-transparent" />
                                 <Button variant={'default'} onClick={handleEditUrl}>Edit</Button>
                                 <Button variant={'outline'} onClick={handleEditUrlClose}>Cancell</Button>
                             </HStack>
@@ -94,8 +102,8 @@ export default function LinkComponent(props : LinkComponentProps)
                                 <Tooltip>
                                     <TooltipTrigger className="group">
                                         <HStack className="space-x-3 items-center">
-                                            <Link href={url} target="_blank" className="text-sm italic text-blue-400 hover:text-blue-300 truncate cursor-pointer">
-                                                {url}
+                                            <Link href={link} target="_blank" className="text-sm italic text-blue-400 hover:text-blue-300 truncate cursor-pointer">
+                                                {link}
                                             </Link>
                                             <IoPencil 
                                                 className="hidden group-hover:block group-focus:block cursor-pointer" 
@@ -105,7 +113,7 @@ export default function LinkComponent(props : LinkComponentProps)
                                         </HStack> 
                                     </TooltipTrigger>
                                     <TooltipContent className="dark:bg-black dark:text-neutral-500">
-                                      {url}
+                                      {link}
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -113,35 +121,40 @@ export default function LinkComponent(props : LinkComponentProps)
                     }
                 </Box>
                 
-                <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <BsThreeDotsVertical />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="min-w-[250px] mr-2 flex flex-col space-y-2">
-                        <DropdownMenuLabel>Settings</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => setEditUrl(true)}>
-                            Edit Url
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setEditTitle(true)}>
-                            Edit Title
-                        </DropdownMenuItem>
-                        <DropdownMenuItem disabled>
-                            Scan For Safety
-                        </DropdownMenuItem>
-                        <DropdownMenuItem disabled>
-                            Move To Incognito/Private
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            Share
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                            className="text-red-500 hover:!text-white hover:!bg-red-500" 
-                            onClick={handleDeleteLinkItem}>
-                                Delete
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <Box className="flex flex-row items-center space-x-5">
+                    
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <BsThreeDotsVertical />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="min-w-[250px] mr-2 flex flex-col space-y-2">
+                            <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => setEditUrl(true)}>
+                                Edit Url
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setEditTitle(true)}>
+                                Edit Title
+                            </DropdownMenuItem>
+                            <DropdownMenuItem disabled>
+                                Scan For Safety
+                            </DropdownMenuItem>
+                            <DropdownMenuItem disabled>
+                                Move To Incognito/Private
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                Share
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                                className="text-red-500 hover:!text-white hover:!bg-red-500" 
+                                onClick={handleDeleteLinkItem}>
+                                    Delete
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <RiDeleteBin7Line className="text-red-500" size={'1rem'} />
+                </Box>
             
             </HStack>
         </Box>

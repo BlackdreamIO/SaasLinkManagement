@@ -1,5 +1,5 @@
 
-export type LinkComponentProps = {
+export type SectionItemProps = {
     url : string;
     title : string;
     onTitleEdit : (newTitle : string) => void;
@@ -7,10 +7,12 @@ export type LinkComponentProps = {
     onLinkDelete : () => void;
 }
 
-export type SectionHeaderProps = {
+export type SectionProps = {
     sectionTitle : string;
     editSectionName : boolean;
+    isMovementLocked : boolean;
     handleEditSectionTitle : (newStr : string) => void;
     handleEditSectionClose : () => void;
     handleToggleMinimize : () => void;
+    handleLockMovement : () => void;
 }
