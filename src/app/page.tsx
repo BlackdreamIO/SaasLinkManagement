@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster"
 export default function page() 
 {
     return (
-        <div className='dark:bg-black min-h-screen max-h-auto no-scrollbar overflow-y-auto'>
+        <div className='dark:bg-[rgb(5,5,5)] min-h-screen max-h-auto no-scrollbar overflow-y-auto'>
             {/* <Webview /> */}
             <AppView/>
             <Toaster />

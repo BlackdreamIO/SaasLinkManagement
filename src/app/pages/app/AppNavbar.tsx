@@ -32,21 +32,21 @@ export default function AppNavbar()
     const menuItemsStyle = `hover:!bg-blue-700 hover:!text-white`
 
     return (
-        <Box className="dark:bg-black bg-neutral-200 shadow-lg max-sm:bg-neutral-200 p-2 
+        <Box className="dark:bg-neutral-950 bg-neutral-200 shadow-lg max-sm:bg-neutral-200 p-2 
         relative inset-x-0 top-0 z-30 mx-auto w-full border dark:border-neutral-600 border-gray-300 max-w-3xl rounded-xl">
            <HStack justify={'space-between'}>
                 
                 <Menubar className='bg-transparent border-transparent'>
                     <MenubarMenu>
                         <MenubarTrigger className='text-neutral-500 dark:hover:text-white hover:text-black'>File</MenubarTrigger>
-                        <MenubarContent className='dark:bg-black mt-2'>
+                        <MenubarContent className='dark:bg-neutral-950 mt-2'>
                             <MenubarItem className={menuItemsStyle}> New Section </MenubarItem>
                             <MenubarItem className={menuItemsStyle}> New Link </MenubarItem>
                             <MenubarItem disabled className={menuItemsStyle}>New Incognito Section</MenubarItem>
                             <MenubarSeparator />
                             <MenubarSub>
                                 <MenubarSubTrigger className={menuItemsStyle}>Export As</MenubarSubTrigger>
-                                <MenubarSubContent className='dark:bg-black'>
+                                <MenubarSubContent className='dark:bg-neutral-950'>
                                     <MenubarItem className={menuItemsStyle}>TXT</MenubarItem>
                                     <MenubarItem className={menuItemsStyle}>JSON</MenubarItem>
                                     <MenubarItem className={menuItemsStyle}>PNG</MenubarItem>
@@ -59,7 +59,7 @@ export default function AppNavbar()
 
                     <MenubarMenu>
                         <MenubarTrigger className='text-neutral-500 dark:hover:text-white hover:text-black'>View</MenubarTrigger>
-                        <MenubarContent className='dark:bg-black mt-2'>
+                        <MenubarContent className='dark:bg-neutral-950 mt-2'>
                             <MenubarCheckboxItem className={menuItemsStyle}>Zoom In +</MenubarCheckboxItem>
                             <MenubarCheckboxItem className={menuItemsStyle}> Zoom Out - </MenubarCheckboxItem>
                             <MenubarSeparator />
@@ -72,10 +72,10 @@ export default function AppNavbar()
 
                     <MenubarMenu>
                         <MenubarTrigger className='text-neutral-500 dark:hover:text-white hover:text-black'>Preference</MenubarTrigger>
-                        <MenubarContent className='dark:bg-black mt-2'>
+                        <MenubarContent className='dark:bg-neutral-950 mt-2'>
                             <MenubarSub>
                                 <MenubarSubTrigger className={menuItemsStyle}>Theme</MenubarSubTrigger>
-                                <MenubarSubContent className='dark:bg-black'>
+                                <MenubarSubContent className='dark:bg-neutral-950'>
                                     <MenubarItem className={menuItemsStyle}>Light</MenubarItem>
                                     <MenubarItem className={menuItemsStyle}>Dark</MenubarItem>
                                     <MenubarItem className={menuItemsStyle}>System</MenubarItem>
@@ -97,7 +97,7 @@ export default function AppNavbar()
                         />
                         <Text>Mohammed Hamim</Text>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className='dark:bg-black mt-2'>
+                    <DropdownMenuContent className='dark:bg-neutral-950 mt-2'>
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className={menuItemsStyle}>Log Out</DropdownMenuItem>

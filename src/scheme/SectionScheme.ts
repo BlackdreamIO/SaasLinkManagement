@@ -1,5 +1,9 @@
+import { LinkItemScheme } from "./LinkSection";
+import { serverTimestamp, FieldValue } from "firebase/firestore";
 
 export interface SectionScheme {
-    title : string,
-    create_at : Date,
+    id : string;
+    created_at : FieldValue;
+    data : LinkItemScheme[] | [];
+    previewCreate? : boolean;
 }

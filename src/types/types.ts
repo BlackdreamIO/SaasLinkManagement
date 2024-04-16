@@ -7,12 +7,11 @@ export type SectionItemProps = {
     onLinkDelete : () => void;
 }
 
-export type SectionProps = {
+export type SectionHeaderProps = {
     sectionTitle : string;
-    editSectionName : boolean;
     isMovementLocked : boolean;
     handleEditSectionTitle : (newStr : string) => void;
-    handleEditSectionClose : () => void;
     handleToggleMinimize : () => void;
     handleLockMovement : () => void;
+    handleOnSectionDelete : (id : string) => void;
 }

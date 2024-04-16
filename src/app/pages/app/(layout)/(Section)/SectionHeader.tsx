@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from "react";
-import { motion, useMotionValue, Reorder, useDragControls } from "framer-motion";
+import { useState, useEffect } from "react";
 
 import { Box, Text, Divider, HStack, Flex } from "@chakra-ui/react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -22,7 +21,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
   } from "@/components/ui/dialog"
 
 import {
@@ -37,34 +35,34 @@ import { Button } from "@/components/ui/button";
 
 import { IoPencil } from "react-icons/io5";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { RiGridFill } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 import { IoLockOpenOutline, IoLockClosedOutline } from "react-icons/io5";
-import { AiOutlineCaretUp, AiOutlineCaretDown  } from "react-icons/ai";
+import { AiOutlineCaretDown  } from "react-icons/ai";
+import { FaLock, FaLockOpen } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin7Line } from "react-icons/ri";
 import { BsIncognito } from "react-icons/bs";
 
-import { SectionProps } from "@/types/types";
+import { SectionHeaderProps } from "@/types/types";
 
-export default function SectionHeader(props : SectionProps) 
+export default function SectionHeader(props : SectionHeaderProps) 
 {
     const { 
         sectionTitle, 
         isMovementLocked, 
         handleEditSectionTitle, 
-        handleEditSectionClose, 
         handleToggleMinimize, 
-        handleLockMovement 
+        handleLockMovement,
+        handleOnSectionDelete,
     } = props;
 
-    const [newSectionName, setNewSectionName] = useState('Heading Text');
+    const [newSectionName, setNewSectionName] = useState('');
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [isSectionEditMode, setIsSectionEditMode] = useState(false);
+    const [movementLockColor, setMovementLockColor] = useState('white');
 
     const handleEditModeClose = () => {
-        handleEditSectionClose?.()
         setIsSectionEditMode(false);
     }
 
@@ -72,6 +70,23 @@ export default function SectionHeader(props : SectionProps)
         handleEditSectionTitle?.(newSectionName);
         setIsSectionEditMode(false);
     }
+
+    const handleSectionDelete = () => {
+        handleOnSectionDelete?.(sectionTitle);
+        setIsSectionEditMode(false);
+    }
+
+    useEffect(() => {
+        const handleEffectAnimation = () => {
+            const newBorderColor = movementLockColor === 'white' ? 'yellow' : 'white';
+            setMovementLockColor(newBorderColor);
+            
+            setTimeout(() => {
+                setMovementLockColor('white')
+            }, 1000);
+        }
+        handleEffectAnimation();
+    }, [isMovementLocked])
 
     return (
         <ContextMenu>
@@ -87,8 +102,8 @@ export default function SectionHeader(props : SectionProps)
                         )
                         : 
                         (
-                            <HStack className="space-x-3 items-center">
-                                <Text className="text-xl text-left truncate">{sectionTitle}</Text>
+                            <HStack className="space-x-3 items-center overflow-hidden">
+                                <Text className="text-lg font-bold font-sans text-left truncate">{sectionTitle}</Text>
                                 <IoPencil
                                     className="hidden group-hover:block group-focus:block cursor-pointer" 
                                     tabIndex={1}
@@ -102,9 +117,26 @@ export default function SectionHeader(props : SectionProps)
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <RiGridFill size={'1rem'} className="cursor-pointer text-neutral-500" />
+                                    {
+                                        !isMovementLocked ? 
+                                        ( 
+                                            <FaLock 
+                                                color={movementLockColor} 
+                                                className="cursor-default transition-all duration-300"
+                                                onClick={() => handleLockMovement?.()}
+                                            /> 
+                                        )
+                                        : 
+                                        ( 
+                                            <FaLockOpen 
+                                                color={movementLockColor} 
+                                                className="cursor-default transition-all duration-300"
+                                                onClick={() => handleLockMovement?.()}
+                                            /> 
+                                        )
+                                    }
                                 </TooltipTrigger>
-                                <TooltipContent className="dark:bg-black dark:text-neutral-500"> Move </TooltipContent>
+                                <TooltipContent className="dark:bg-black dark:text-neutral-500"> Lock/Unlock Movement </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
                         <DropdownMenu>
@@ -117,8 +149,8 @@ export default function SectionHeader(props : SectionProps)
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleLockMovement?.()}>
                                     {
-                                        isMovementLocked ? ( <> <IoLockOpenOutline className="mr-3" /> UnLock Movement </> ) 
-                                                        : ( <>< IoLockClosedOutline className="mr-3" /> Lock Movement</> )
+                                        isMovementLocked ? ( <>< IoLockClosedOutline className="mr-3" /> Lock Movement</> )
+                                                        : ( <> <IoLockOpenOutline className="mr-3" /> Unlock Movement </> )
                                     }
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleToggleMinimize?.()}>
@@ -142,7 +174,12 @@ export default function SectionHeader(props : SectionProps)
             </ContextMenuTrigger>
             <ContextMenuContent className="w-[250px] space-y-3 py-2">
                 <ContextMenuItem onClick={() => setIsSectionEditMode(true)}> <FiEdit2 className="mr-3" /> Edit Section Title</ContextMenuItem>
-                <ContextMenuItem onClick={() => handleLockMovement?.()}> <IoLockOpenOutline className="mr-3" /> Lock Movement</ContextMenuItem>
+                <ContextMenuItem onClick={() => handleLockMovement?.()}>
+                {
+                    isMovementLocked ? ( <>< IoLockClosedOutline className="mr-3" /> Lock Movement</> )
+                                    : ( <> <IoLockOpenOutline className="mr-3" /> Unlock Movement </> )
+                }
+                </ContextMenuItem>
                 <ContextMenuItem onClick={() => handleToggleMinimize?.()}> <AiOutlineCaretDown className="mr-3" /> Collapse/Expand Section</ContextMenuItem>
                 <ContextMenuItem 
                     className="text-red-500 hover:!text-white hover:!bg-red-500" 
@@ -160,7 +197,7 @@ export default function SectionHeader(props : SectionProps)
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="flex flex-row space-x-5 justify-end">
-                        <Button variant={'outline'} className="w-3/12">Confirm</Button>
+                        <Button variant={'outline'} className="w-3/12" onClick={handleSectionDelete}>Confirm</Button>
                         <Button variant={'outline'} className="w-3/12" onClick={() => setOpenDeleteDialog(false)}>Cancell</Button>
                     </DialogFooter>
                 </DialogContent>
