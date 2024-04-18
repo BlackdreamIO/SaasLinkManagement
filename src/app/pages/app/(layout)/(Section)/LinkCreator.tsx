@@ -19,6 +19,7 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
+  import { IoAddCircleOutline } from "react-icons/io5";
 
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
@@ -40,7 +41,11 @@ export default function LinkCreator({ onLinkCreate } : { onLinkCreate : ( linkDa
             title : currentTitle,
             link : currentUrl,
             created_at : newInstanceDate
-        })
+        });
+        setCurrentTitle('');
+        setCurrentUrl('');
+        setDate(new Date);
+        setOpenCreateDialog(false)
     }
 
     const handleCloseDialog = () => {
@@ -49,8 +54,10 @@ export default function LinkCreator({ onLinkCreate } : { onLinkCreate : ( linkDa
 
     return (
         <Dialog open={openCreateDialog} onOpenChange={() => setOpenCreateDialog(!openCreateDialog)}>
-            <DialogTrigger asChild>
-                <Button variant="outline">Create New Link</Button>
+            <DialogTrigger className="w-full flex flex-row items-center justify-center pb-5" asChild>
+                <Button className="m-auto !bg-transparent text-neutral-500 hover:text-white" variant="ghost">
+                    <IoAddCircleOutline size={'2rem'}/>
+                </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

@@ -134,7 +134,7 @@ export default function AppLayout() {
             opacity : 1
         },
         "hidden" : {
-            opacity : 0
+            opacity : 0.5
         }
     }
 

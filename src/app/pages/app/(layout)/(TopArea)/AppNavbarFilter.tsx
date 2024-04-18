@@ -54,7 +54,7 @@ export default function AppNavbarFilter()
     }
 
     return (
-        <Box className={`w-full dark:bg-black p-4  max-w-2xl rounded-lg border ${toggleFilter ? 'border-sky-400' : 'border-neutral-700'} transition-all duration-150 space-y-5`}>
+        <Box className={`w-full dark:bg-black p-4 rounded-lg border ${toggleFilter ? 'border-sky-400' : 'border-neutral-700'} transition-all duration-150 space-y-5`}>
            
             <Flex justify={'space-between'} className='w-full items-center px-4'>
                 <HStack className='space-x-5'>

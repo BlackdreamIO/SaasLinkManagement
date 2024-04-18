@@ -1,6 +1,6 @@
 
 export interface LinkItemScheme {
-    id? : string;
+    id : string;
     title : string;
     link : string;
     created_at : Date;

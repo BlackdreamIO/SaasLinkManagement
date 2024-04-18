@@ -76,17 +76,19 @@ export default function SectionHeader(props : SectionHeaderProps)
         setIsSectionEditMode(false);
     }
 
+    const isDarkMode = document.body.parentElement?.classList.contains('dark');
+    
     useEffect(() => {
         const handleEffectAnimation = () => {
-            const newBorderColor = movementLockColor === 'white' ? 'yellow' : 'white';
+            const newBorderColor = movementLockColor === 'black' || movementLockColor === 'white' ? 'yellow' : isDarkMode ? 'gray' : 'black';
             setMovementLockColor(newBorderColor);
             
             setTimeout(() => {
-                setMovementLockColor('white')
+                setMovementLockColor(isDarkMode ? 'gray' : 'black')
             }, 1000);
         }
         handleEffectAnimation();
-    }, [isMovementLocked])
+    }, [isMovementLocked, isDarkMode])
 
     return (
         <ContextMenu>
@@ -104,35 +106,41 @@ export default function SectionHeader(props : SectionHeaderProps)
                         (
                             <HStack className="space-x-3 items-center overflow-hidden">
                                 <Text className="text-lg font-bold font-sans text-left truncate">{sectionTitle}</Text>
-                                <IoPencil
-                                    className="hidden group-hover:block group-focus:block cursor-pointer" 
-                                    tabIndex={1}
-                                    onClick={() => setIsSectionEditMode(true)}
-                                />
+                                <Button variant={'ghost'} className="hidden group-hover:block group-focus:block cursor-pointer" onClick={() => setIsSectionEditMode(true)}>
+                                    <IoPencil />
+                                </Button>
                             </HStack> 
                         )
                     }
-                    <HStack className="space-x-3 items-center">
-                        <MdOutlineArrowDropDown onClick={() => handleToggleMinimize?.()} size={'2rem'} />
+                    <HStack className="space-x-2 items-center">
+                        <Button className="!bg-transparent p-0 cursor-default" variant={'ghost'} onClick={() => handleToggleMinimize?.()} >
+                            <MdOutlineArrowDropDown 
+                                size={'2rem'} 
+                                className="text-neutral-500 dark:hover:text-white hover:text-black" 
+                            />
+                        </Button>
+
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
                                     {
                                         !isMovementLocked ? 
                                         ( 
-                                            <FaLock 
-                                                color={movementLockColor} 
-                                                className="cursor-default transition-all duration-300"
-                                                onClick={() => handleLockMovement?.()}
-                                            /> 
+                                            <Button className="!bg-transparent cursor-default" variant={'ghost'} onClick={() => handleLockMovement?.()}>
+                                                <FaLock 
+                                                    color={movementLockColor} 
+                                                    className="transition-all duration-300"
+                                                /> 
+                                            </Button>
                                         )
                                         : 
                                         ( 
-                                            <FaLockOpen 
-                                                color={movementLockColor} 
-                                                className="cursor-default transition-all duration-300"
-                                                onClick={() => handleLockMovement?.()}
-                                            /> 
+                                            <Button className="!bg-transparent cursor-default" variant={'ghost'} onClick={() => handleLockMovement?.()}>
+                                                <FaLockOpen 
+                                                    color={movementLockColor} 
+                                                    className="transition-all duration-300"
+                                                /> 
+                                            </Button>
                                         )
                                     }
                                 </TooltipTrigger>
@@ -140,30 +148,32 @@ export default function SectionHeader(props : SectionHeaderProps)
                             </Tooltip>
                         </TooltipProvider>
                         <DropdownMenu>
-                            <DropdownMenuTrigger> <BsThreeDotsVertical size={'1rem'} /> </DropdownMenuTrigger>
-                            <DropdownMenuContent className="min-w-[250px] mr-2 flex flex-col space-y-2">
-                                <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                            <DropdownMenuTrigger> 
+                                <BsThreeDotsVertical size={'1rem'} className="text-neutral-500 dark:hover:text-white hover:text-black" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="bg-black min-w-[250px] mr-10 flex flex-col space-y-2 transition-none rounded-2xl">
+                                <DropdownMenuLabel className="font-bold text-xl">Settings</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => setIsSectionEditMode(true)}>
+                                <DropdownMenuItem className="text-neutral-500 hover:!text-neutral-300 !bg-transparent transition-none" onClick={() => setIsSectionEditMode(true)}>
                                     <FiEdit2 className="mr-3" /> Edit Section Title
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleLockMovement?.()}>
+                                <DropdownMenuItem className="text-neutral-500 hover:!text-neutral-300 !bg-transparent transition-none" onClick={() => handleLockMovement?.()}>
                                     {
                                         isMovementLocked ? ( <>< IoLockClosedOutline className="mr-3" /> Lock Movement</> )
                                                         : ( <> <IoLockOpenOutline className="mr-3" /> Unlock Movement </> )
                                     }
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleToggleMinimize?.()}>
+                                <DropdownMenuItem className="text-neutral-500 hover:!text-neutral-300 !bg-transparent transition-none" onClick={() => handleToggleMinimize?.()}>
                                     <AiOutlineCaretDown className="mr-3" /> Collapse/Expand Section
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem className="text-neutral-500 hover:!text-neutral-300 !bg-transparent transition-none">
                                     Add New Link
                                 </DropdownMenuItem>
                                 <DropdownMenuItem disabled>
                                     <BsIncognito className="mr-3" /> Convert To Incognito
                                 </DropdownMenuItem>
                                 <DropdownMenuItem 
-                                    className="text-red-500 hover:!text-white hover:!bg-red-500"
+                                    className="text-neutral-500 hover:!text-red-500 !bg-transparent transition-none"
                                     onClick={() => setOpenDeleteDialog(!openDeleteDialog)}>
                                     <RiDeleteBin7Line className="mr-3" />  Delete
                                 </DropdownMenuItem>
@@ -172,17 +182,25 @@ export default function SectionHeader(props : SectionHeaderProps)
                     </HStack>
                 </HStack>
             </ContextMenuTrigger>
-            <ContextMenuContent className="w-[250px] space-y-3 py-2">
-                <ContextMenuItem onClick={() => setIsSectionEditMode(true)}> <FiEdit2 className="mr-3" /> Edit Section Title</ContextMenuItem>
-                <ContextMenuItem onClick={() => handleLockMovement?.()}>
+            <ContextMenuContent className="dark:bg-black w-[250px] space-y-3 py-2 rounded-2xl">
+                <ContextMenuItem className="!text-white font-bold text-xl !bg-transparent" onClick={() => setIsSectionEditMode(true)}> 
+                    Setting
+                </ContextMenuItem>
+                <Divider className="my-2 !bg-neutral-800"/>
+                <ContextMenuItem className="text-neutral-500 hover:!text-neutral-300 !bg-transparent" onClick={() => setIsSectionEditMode(true)}> 
+                    <FiEdit2 className="mr-3" /> Edit Section Title
+                </ContextMenuItem>
+                <ContextMenuItem onClick={() => handleLockMovement?.()} className="text-neutral-500 !bg-transparent">
                 {
                     isMovementLocked ? ( <>< IoLockClosedOutline className="mr-3" /> Lock Movement</> )
                                     : ( <> <IoLockOpenOutline className="mr-3" /> Unlock Movement </> )
                 }
                 </ContextMenuItem>
-                <ContextMenuItem onClick={() => handleToggleMinimize?.()}> <AiOutlineCaretDown className="mr-3" /> Collapse/Expand Section</ContextMenuItem>
+                <ContextMenuItem className="text-neutral-500 hover:!text-neutral-300 !bg-transparent" onClick={() => handleToggleMinimize?.()}> 
+                    <AiOutlineCaretDown className="mr-3" /> Collapse/Expand Section
+                </ContextMenuItem>
                 <ContextMenuItem 
-                    className="text-red-500 hover:!text-white hover:!bg-red-500" 
+                    className="text-neutral-500 hover:!text-red-500 !bg-transparent" 
                     onClick={() => setOpenDeleteDialog(!openDeleteDialog)}>
                     <RiDeleteBin7Line className="mr-3" />  Delete
                 </ContextMenuItem>

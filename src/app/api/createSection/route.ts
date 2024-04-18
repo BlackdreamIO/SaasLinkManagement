@@ -117,6 +117,4 @@ export async function DELETE(req : NextRequest)
     {
         return NextResponse.json({ status : `failed to delete document ${error}` })
     }
-    
-    return NextResponse.json({ status : 404 })
 }
