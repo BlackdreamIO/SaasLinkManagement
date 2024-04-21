@@ -37,11 +37,13 @@ export default function LinkCreator({ onLinkCreate } : { onLinkCreate : ( linkDa
     const handleCreateLink = () => {
         const newInstanceDate : Date | any = date;
 
-        onLinkCreate?.({
+        const createData : any = {
             title : currentTitle,
             link : currentUrl,
             created_at : newInstanceDate
-        });
+        }
+
+        onLinkCreate?.(createData);
         setCurrentTitle('');
         setCurrentUrl('');
         setDate(new Date);
@@ -55,7 +57,7 @@ export default function LinkCreator({ onLinkCreate } : { onLinkCreate : ( linkDa
     return (
         <Dialog open={openCreateDialog} onOpenChange={() => setOpenCreateDialog(!openCreateDialog)}>
             <DialogTrigger className="w-full flex flex-row items-center justify-center pb-5" asChild>
-                <Button className="m-auto !bg-transparent text-neutral-500 hover:text-white" variant="ghost">
+                <Button className="w-1/12 m-auto !bg-transparent text-neutral-500 hover:text-white" variant="ghost">
                     <IoAddCircleOutline size={'2rem'}/>
                 </Button>
             </DialogTrigger>

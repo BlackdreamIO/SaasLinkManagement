@@ -1,8 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { SectionItemProps } from "@/types/types";
+import { FetchPUT, FetchDELETE } from "@/hook/useFetch";
 
 import { Box, Text, HStack, Divider} from "@chakra-ui/react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { IoPencil } from "react-icons/io5";
+import { LinkItemScheme } from "@/scheme/LinkSection";
+import { RiDeleteBin7Line } from "react-icons/ri";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,83 +28,68 @@ import {
     ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoPencil } from "react-icons/io5";
-import { LinkItemScheme } from "@/scheme/LinkSection";
-import { RiDeleteBin7Line } from "react-icons/ri";
-
 interface SectionItemInterfaceProps extends LinkItemScheme {
-    onLinkTitleEdit : (id : string, newTitle : string) => void;
-    onLinkUrlEdit : (id : string, newUrl: string) => void;
-    onLinkDelete : (id : string) => void;
+    onLinkUpdate : () => void;
     sectionName : string;
 }
 
 export default function LinkItem(props : SectionItemInterfaceProps) 
 {
-    const { title, link, onLinkTitleEdit, onLinkUrlEdit, onLinkDelete, id, sectionName } = props;
+    const { title, link, onLinkUpdate, id, sectionName } = props;
 
     const [editTitle, setEditTitle] = useState(false);
     const [editUrl, setEditUrl] = useState(false);
 
-    const [newUrl, setNewUrl] = useState('');
     const [newTitle, setNewTitle] = useState('');
+    const [newUrl, setNewUrl] = useState('');
 
-    const handleEditUrl = async () => { 
-
-            await fetch('http://localhost:3000/api/link/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    sectionId : sectionName,
-                    linkId : id,
-                    fieldToUpdate : 'title',
-                    newValue : setNewTitle
-                })
-            })
-
-            console.log({
-                sectionId : sectionName,
-                linkId : id,
-                fieldToUpdate : 'title',
-                newValue : setNewTitle
-            });
-
-    }
+    const [isLoading, setIsLoading] = useState(false);
     
-    const handleEditTitle = () => { 
-        if(newTitle.length > 2) {
-            onLinkTitleEdit?.(id, newTitle);
-            setEditTitle(false);
+    const handleFieldEdit = async (feild : 'title' | 'link') => {
+        
+        if(feild == 'title' ? newTitle.length < 2 : newUrl.length < 2) return;
+        feild == 'title' ? setEditTitle(false) : setEditUrl(false);
+
+        setIsLoading(true);
+
+        const updatedData = {
+            sectionId : sectionName, 
+            linkId : id, 
+            fieldToUpdate : feild, 
+            newValue : feild == 'title' ? newTitle : newUrl
         }
+        const response : any = await FetchPUT({ url : 'http://localhost:3000/api/link/update', body : updatedData });
+        
+        response.ok ? onLinkUpdate?.() : console.error('Link update rejected/failed');
+        setIsLoading(response.ok ? false : isLoading);
     }
 
-    const handleEditUrlClose = () => setEditUrl(false);
-    const handleEditTitleClose = () => setEditTitle(false);
+    const handleDeleteLinkItem = async () => {
+        setIsLoading(true);
 
-    const handleDeleteLinkItem = () => onLinkDelete?.(id);
+        const response : any = await FetchDELETE({ url : '', body : { sectionId : sectionName, linkId : id } });
+
+        response.ok ? onLinkUpdate?.() : console.error('Link update rejected/failed');
+        setIsLoading(response.ok ? false : isLoading);
+
+        if(!response.ok) alert('failed to delete link please try again');
+    }
 
     return (
         <ContextMenu>
             <ContextMenuTrigger>
-                <Box className="dark:bg-[rgb(10,10,10)] bg-neutral-100 shadow-md p-5 w-full rounded-2xl border border-transparent hover:border-neutral-800">
-                    <HStack justify={'space-between'} className="items-center max-sm:!flex-col space-x-5">
+                <Box className={`dark:bg-[rgb(10,10,10)] bg-neutral-100 shadow-md px-5 py-3 w-full rounded-2xl border
+                 ${isLoading ? 'border-blue-500' : 'border-transparent hover:border-neutral-800'}
+                 ${isLoading ? 'pointer-events-none opacity-50' : 'pointer-events-auto opacity-100'}`}>
+                    <HStack className="items-center max-sm:!flex-col space-x-5  justify-center">
                         <Box tabIndex={1} className="max-w-7/12 w-6/12 max-sm:max-w-full max-sm:w-full overflow-hidden group">
                             {
                                 editTitle ?
                                 (
                                     <HStack>
                                         <Input tabIndex={2} placeholder={title} onChange={(e) => setNewTitle(e.target.value)} className="bg-transparent" />
-                                        <Button variant={'default'} onClick={handleEditTitle}>Edit</Button>
-                                        <Button variant={'outline'} onClick={handleEditTitleClose}>Cancell</Button>
+                                        <Button variant={'default'} onClick={() => handleFieldEdit('title')}>Edit</Button>
+                                        <Button variant={'outline'} onClick={() => setEditTitle(false)}>Cancell</Button>
                                     </HStack>
                                 )
                                 :
@@ -115,10 +110,10 @@ export default function LinkItem(props : SectionItemInterfaceProps)
                             {
                                 editUrl ?
                                 (
-                                    <HStack >
+                                    <HStack>
                                         <Input tabIndex={2} placeholder={link} onChange={(e) => setNewUrl(e.target.value)} className="bg-transparent focus:outline" />
-                                        <Button variant={'default'} onClick={handleEditUrl}>Edit</Button>
-                                        <Button variant={'outline'} onClick={handleEditUrlClose}>Cancell</Button>
+                                        <Button variant={'default'} onClick={() => handleFieldEdit('link')}>Edit</Button>
+                                        <Button variant={'outline'} onClick={() => setEditUrl(false)}>Cancell</Button>
                                     </HStack>
                                 )
                                 :
@@ -189,7 +184,7 @@ export default function LinkItem(props : SectionItemInterfaceProps)
                 <ContextMenuItem className="text-neutral-500 hover:!text-neutral-300 !bg-transparent hover:!bg-neutral-950 transition-none">
                     Share
                 </ContextMenuItem>
-                <ContextMenuItem className="text-red-500 hover:!text-white hover:!bg-red-500">
+                <ContextMenuItem onClick={handleDeleteLinkItem} className="text-red-500 hover:!text-white hover:!bg-red-500">
                     Delete
                 </ContextMenuItem>
             </ContextMenuContent>

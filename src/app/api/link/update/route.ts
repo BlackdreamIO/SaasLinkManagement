@@ -17,7 +17,7 @@ export async function PUT(req : Request)
 
         if(docSnapshot.exists()) {
             await updateDoc(documentRef, {
-                [objectProperty]: body.newValue
+                [`${body.linkId}.${body.fieldToUpdate}`]: body.newValue
             });
             return NextResponse.json({ message: 'updated sucessfully' }, { status: 200 });
         }
