@@ -1,6 +1,12 @@
 'use client'
 
 import { useState, useEffect, memo } from "react";
+import { cn } from "@/lib/utils";
+import useDisableElements from "@/hook/useDisableElements";
+import useGenerateCryptoUUID from "@/hook/useGenerateCryptoUUID";
+import { FetchGET, FetchPOST, FetchPUT } from "@/hook/useFetch";
+import { LinkItemScheme } from "@/scheme/LinkSection";
+
 import { motion, useMotionValue, Reorder } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -10,10 +16,6 @@ import SectionHeader from "./SectionHeader";
 import LinkCreator from "./LinkCreator";
 import LinkItem from "./LinkItem";
 
-import { LinkItemScheme } from "@/scheme/LinkSection";
-import { cn } from "@/lib/utils";
-import { FetchGET, FetchPOST, FetchPUT } from "@/hook/useFetch";
-import useDisableElements from "@/hook/useDisableElements";
 
 type SectionProps = {
     sectionTitle : string;
@@ -85,8 +87,8 @@ export const Section = memo((props : SectionProps) => {
         }
         showToastContent({ title : `Creating New Link ${linkData.title}`, descirption : `Url ${linkData.link}` });
         
-        const ranUUID = crypto.randomUUID().slice(0, 10);
-        const response : any = await FetchPOST({ url : 'http://localhost:3000/api/link/create', body : { id : sectionTitle, linkId : ranUUID, linkName : linkData.title, linkUrl : linkData.link, } });
+        const randomUUID = useGenerateCryptoUUID({ length : 10 });
+        const response : any = await FetchPOST({ url : 'http://localhost:3000/api/link/create', body : { sectionId : sectionName, linkId : randomUUID, linkName : linkData.title, linkUrl : linkData.link } });
         
         response.ok ? handleFetchLinks() : console.error('Link call <handleFetchLinks()>');
         if(!response.ok) {
@@ -96,9 +98,11 @@ export const Section = memo((props : SectionProps) => {
     }
     
     const handleFetchLinks = async () => {
-        const response : any = await FetchGET({ url : 'http://localhost:3000/api/link/get'});
-        response.ok ? setLinks(response.links) : console.error('failed to fetch links');
-        if(!response.ok) alert('failed to fetch links please try refreshing the browser');
+        const response : any = await FetchPOST({ url : 'http://localhost:3000/api/link/get', useJsonStringify : true, body : { sectionId : sectionName }});
+        const josnData = await response.json();
+        josnData.links ? setLinks(josnData.links) : console.error('failed to fetch links');
+        
+        if(!response) alert('failed to fetch links please try refreshing the browser');
     }
 
     useEffect(() => {

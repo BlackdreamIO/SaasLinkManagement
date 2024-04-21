@@ -12,6 +12,9 @@ import AppNavbarFilter from './(TopArea)/AppNavbarFilter';
 
 import { Box, Button, Text } from '@chakra-ui/react';
 import { GoPlus } from "react-icons/go";
+import { FetchGET, FetchPOST, FetchDELETE } from '@/hook/useFetch';
+import { webcrypto } from 'crypto';
+import useGenerateCryptoUUID from '@/hook/useGenerateCryptoUUID';
 
 
 export default function AppLayout() {
@@ -20,30 +23,25 @@ export default function AppLayout() {
     const [sections, setSections] = useState<SectionScheme[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const getSection = async () => {
+    const fetchSections = async () => {
+        
         setIsLoading(true);
-        try 
-        {
-            const sectionSnapshots = await fetch('http://localhost:3000/api/createSection', {
-                method : 'GET',
-                cache : "no-cache",
-                next : {
-                    revalidate : 0
-                }
-            })
-
-            const sections = await sectionSnapshots.json();
-            setSections(sections.documents);
-            setItems(sections.documents.map((doc : any) => doc.id));
+        const response : any = await FetchGET({ url : 'http://localhost:3000/api/section/get' });
+        
+        if(response) {
+            setSections(response.documents);
+            setItems(response.documents.map((doc : any) => doc.id));
             setIsLoading(false);
         }
-        catch (error) {
-            console.log('There was error while fetching data');
+        else {
             setIsLoading(false);
+            console.log('failed to fetch sections ', response);   
         }
     }
     
     const createSection = async () => {
+        
+        const response : any = await FetchPOST({ url : 'http://localhost:3000/api/section/create', body : {  } });
         try
         {
             const newSectionData : SectionScheme = {
@@ -59,12 +57,12 @@ export default function AppLayout() {
                 body: JSON.stringify(newSectionData), // Add your data to be sent in the request body
             });
             if(sectionSnapshot.ok) {
-                getSection();
+                fetchSections();
             }
             
         } 
         catch (error) {
-            getSection();
+            fetchSections();
         }
     }
 
@@ -80,7 +78,7 @@ export default function AppLayout() {
                 }),
             })
             .then(() => {
-                getSection();
+                fetchSections();
                 toast({
                     title: `Deleted Section ${sectionID}`,
                     className: cn('dark:bg-neutral-900 border-2 border-blue-500'),
@@ -103,7 +101,7 @@ export default function AppLayout() {
     }
 
     const handleRefreshSection = () => {
-        getSection();
+        fetchSections();
     }
 
     useEffect(() => {
@@ -111,12 +109,11 @@ export default function AppLayout() {
     }, [sections])
 
     useEffect(() => {
-        getSection();
+        fetchSections();
     }, [])
-    
-    
+
+    // Update the order of sections based on the new order of items
     const handleItemReorder = useCallback((newOrder: string[]) => {
-        // Update the order of sections based on the new order of items
         const newSections : any = newOrder.map(id => sections.find(section => section.id === id));
         setSections(newSections);
     }, [sections])
