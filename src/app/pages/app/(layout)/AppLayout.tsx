@@ -7,7 +7,7 @@ import { SectionScheme } from '@/scheme/SectionScheme';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
-import { Section } from './(Section)/Section';
+import Section from './(section)/Section';
 import AppNavbarFilter from './(TopArea)/AppNavbarFilter';
 
 import { Box, Button, Text } from '@chakra-ui/react';

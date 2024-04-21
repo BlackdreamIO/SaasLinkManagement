@@ -216,3 +216,7 @@ export const Section = memo((props : SectionProps) => {
         </Reorder.Item>
     )
 })
+
+Section.displayName = "Section"
+
+export default Section;
