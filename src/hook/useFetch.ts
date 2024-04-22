@@ -78,7 +78,10 @@ export async function FetchGET ({ url, returnJsonData=true } : { url : string, r
         const response = await fetch(url, {
             method : 'GET',
             headers : { 'Content-Type': 'application/json' },
-            cache : 'no-store'
+            cache : 'no-cache',
+            next : {
+                revalidate : 0
+            }
         })
         
         const jsonData = await response.json()
@@ -98,7 +101,10 @@ export async function FetchPOST ({ url, body, useJsonStringify=true } : { url : 
             method : 'POST',
             headers : { 'Content-Type': 'application/json' },
             body : useJsonStringify ? JSON.stringify(body) : body,
-            cache : 'no-store'
+            cache : 'no-cache',
+            next : {
+                revalidate : 0
+            }
         })
         return response;
     } 
@@ -124,7 +130,10 @@ export async function FetchPUT ( arg : FetchPUTInterface)
             method : 'PUT',
             headers : { 'Content-Type': 'application/json' },
             body : useJsonStringify ? JSON.stringify(body) : body,
-            cache : 'no-store'
+            cache : 'no-cache',
+            next : {
+                revalidate : 0
+            }
         })
         return response;
     } 
@@ -149,7 +158,10 @@ export async function FetchDELETE ( arg : FetchDELETEInterface)
             method : 'DELETE',
             headers : { 'Content-Type': 'application/json' },
             body : useJsonStringify ? JSON.stringify(body) : body,
-            cache : 'no-store'
+            cache : 'no-cache',
+            next : {
+                revalidate : 0
+            }
         })
         return response;
     } 
