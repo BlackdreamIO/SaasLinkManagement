@@ -69,7 +69,7 @@ export const Section = memo((props : SectionProps) => {
         setSectionName(newStr);
         setIsLoading(true);
 
-        const response : any = await FetchPUT({ url : 'http://localhost:3000/api/section/update', body : { id : sectionTitle, newID : newStr, data : {} } });
+        const response : any = await FetchPUT({ url : '/api/section/update', body : { id : sectionTitle, newID : newStr, data : {} } });
 
         response.ok ? onNameChangedEvent?.() : console.error('Link call <onNameChangedEvent()>');
         response.ok ? 
@@ -88,7 +88,7 @@ export const Section = memo((props : SectionProps) => {
         showToastContent({ title : `Creating New Link ${linkData.title}`, descirption : `Url ${linkData.link}` });
         
         const randomUUID = GenerateCryptoUUID({ length : 10 });
-        const response : any = await FetchPOST({ url : 'http://localhost:3000/api/link/create', body : { sectionId : sectionName, linkId : randomUUID, linkName : linkData.title, linkUrl : linkData.link } });
+        const response : any = await FetchPOST({ url : '/api/link/create', body : { sectionId : sectionName, linkId : randomUUID, linkName : linkData.title, linkUrl : linkData.link } });
         
         response.ok ? handleFetchLinks() : console.error('Link call <handleFetchLinks()>');
         if(!response.ok) {
@@ -98,7 +98,7 @@ export const Section = memo((props : SectionProps) => {
     }
     
     const handleFetchLinks = async () => {
-        const response : any = await FetchPOST({ url : 'http://localhost:3000/api/link/get', useJsonStringify : true, body : { sectionId : sectionName }});
+        const response : any = await FetchPOST({ url : '/api/link/get', useJsonStringify : true, body : { sectionId : sectionName }});
         const josnData = await response.json();
         josnData.links ? setLinks(josnData.links) : console.error('failed to fetch links');
         

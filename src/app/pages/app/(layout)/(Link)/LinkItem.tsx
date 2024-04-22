@@ -58,7 +58,7 @@ export default function LinkItem(props : SectionItemInterfaceProps)
             fieldToUpdate : feild, 
             newValue : feild == 'title' ? newTitle : newUrl
         }
-        const response : any = await FetchPUT({ url : 'http://localhost:3000/api/link/update', body : updatedData });
+        const response : any = await FetchPUT({ url : '/api/link/update', body : updatedData });
         
         response.ok ? onLinkUpdate?.() : console.error('Link update rejected/failed');
         setIsLoading(response.ok ? false : isLoading);

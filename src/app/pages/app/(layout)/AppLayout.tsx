@@ -24,7 +24,7 @@ export default function AppLayout() {
     const fetchSections = async () => {
         
         setIsLoading(true);
-        const response : any = await FetchGET({ url : 'http://localhost:3000/api/section/get' });
+        const response : any = await FetchGET({ url : '/api/section/get' });
         
         if(response) {
             setSections(response.documents);
@@ -39,7 +39,7 @@ export default function AppLayout() {
     
     const createSection = async () => {
         
-        const response : any = await FetchPOST({ url : 'http://localhost:3000/api/section/create', body : {  } });
+        const response : any = await FetchPOST({ url : '/api/section/create', body : {  } });
         try
         {
             const newSectionData : SectionScheme = {
@@ -48,7 +48,7 @@ export default function AppLayout() {
                 created_at : serverTimestamp(),
             }
 
-            const sectionSnapshot = await fetch('http://localhost:3000/api/createSection', {
+            const sectionSnapshot = await fetch('/api/createSection', {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: { 'Content-Type': 'application/json' },
@@ -67,7 +67,7 @@ export default function AppLayout() {
     const deleteSection = async (sectionID : string) => {        
         try
         {
-            await fetch('http://localhost:3000/api/createSection', {
+            await fetch('/api/createSection', {
                 method: 'DELETE',
                 cache: 'no-cache',
                 headers: { 'Content-Type': 'application/json' },
