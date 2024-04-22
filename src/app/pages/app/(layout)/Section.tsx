@@ -3,7 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import { cn } from "@/lib/utils";
 import useDisableElements from "@/hook/useDisableElements";
-import GenerateCryptoUUID from "../../../../../globalFunction/GenerateCryptoUUID";
+import GenerateCryptoUUID from "../../../../globalFunction/GenerateCryptoUUID";
 import { FetchGET, FetchPOST, FetchPUT } from "@/hook/useFetch";
 import { LinkItemScheme } from "@/scheme/LinkSection";
 
@@ -12,9 +12,9 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { Box, Divider, Flex } from "@chakra-ui/react";
 
-import SectionHeader from "./SectionHeader";
-import LinkCreator from "./LinkCreator";
-import LinkItem from "./LinkItem";
+import SectionHeader from "./(section)/SectionHeader";
+import LinkCreator from "./(section)/LinkCreator";
+import LinkItem from "./(section)/LinkItem";
 
 
 type SectionProps = {

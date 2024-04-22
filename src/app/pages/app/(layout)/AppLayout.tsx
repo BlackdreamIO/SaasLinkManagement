@@ -13,7 +13,7 @@ import { Box, Button, Text } from '@chakra-ui/react';
 import { GoPlus } from "react-icons/go";
 import { FetchGET, FetchPOST, FetchDELETE } from '@/hook/useFetch';
 
-import { Section } from './(section)/Section';
+import { Section } from './Section';
 
 export default function AppLayout() {
     
