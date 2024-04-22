@@ -14,6 +14,7 @@ import { GoPlus } from "react-icons/go";
 import { FetchGET, FetchPOST, FetchDELETE } from '@/hook/useFetch';
 
 import { Section } from './(Segment)/Section';
+import GenerateCryptoUUID from '@/globalFunction/GenerateCryptoUUID';
 
 export default function AppLayout() {
     
@@ -39,62 +40,44 @@ export default function AppLayout() {
     
     const createSection = async () => {
         
-        const response : any = await FetchPOST({ url : '/api/section/create', body : {  } });
-        try
-        {
-            const newSectionData : SectionScheme = {
-                id : `New Section ${window.crypto.randomUUID().slice(0, 4)}`,
-                data : [],
-                created_at : serverTimestamp(),
-            }
+        const newSectionData = {
+            sectionId : `New Section ${GenerateCryptoUUID({bufferSize : 1, length : 1, mode : 'unitArray'})}`,
+            data : [],
+            created_at : serverTimestamp(),
+        }
 
-            const sectionSnapshot = await fetch('/api/createSection', {
-                method: 'POST',
-                cache: 'no-cache',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newSectionData), // Add your data to be sent in the request body
-            });
-            if(sectionSnapshot.ok) {
-                fetchSections();
-            }
-            
-        } 
-        catch (error) {
+        const response : any = await FetchPOST({ url : '/api/section/create', body : newSectionData , useJsonStringify : true });
+        
+        if(response.ok) {
             fetchSections();
+        }
+        else {
+            alert('Failed To Fetch Sections 405');
+            fetchSections();
+            console.log(response);
         }
     }
 
-    const deleteSection = async (sectionID : string) => {        
-        try
-        {
-            await fetch('/api/createSection', {
-                method: 'DELETE',
-                cache: 'no-cache',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id : sectionID,
-                }),
-            })
-            .then(() => {
-                fetchSections();
-                toast({
-                    title: `Deleted Section ${sectionID}`,
-                    className: cn('dark:bg-neutral-900 border-2 border-blue-500'),
-                })
-            })
-            .catch((error) => {
-                toast({
-                    title: `${error}`,
-                    className: cn('dark:bg-neutral-900 border-2 border-yellow-500'),
-                })
-            })
-        } 
-        catch (error) {
+    const deleteSection = async (id : string) => {        
+        
+        const response : any = await FetchDELETE({ url : '/api/section/delete', body : { sectionId : id }, useJsonStringify : true });
+        
+        if(response.ok) {
+            fetchSections();
             toast({
-                title: `Failed Delete Section ${sectionID}`,
-                description: `ERR ${error}`,
-                className: cn('dark:bg-neutral-900 border-2 border-red-500'),
+                title: `Deleted Section ${id}`,
+                className: cn('dark:bg-neutral-900 border-2 border-blue-500'),
+            });
+            console.log(response);
+        }
+        else {
+            alert('Failed To Delete Sections 405');
+            fetchSections();
+            toast({
+                title: `${response.statusText}`,
+                className: cn('dark:bg-neutral-900 border-2 border-yellow-500'),
             })
+            console.log(response);
         }
     }
 

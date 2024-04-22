@@ -11,12 +11,12 @@ import { db } from "@/database/firebaseConfig";
 
 export async function POST(req : Request) 
 {
-    const sectionData = await req.json();
+    const body = await req.json();
 
     if((req.method === 'POST')) 
     {
         const collectionReferance = collection(db, 'document');
-        const newDocRef = doc(db, collectionReferance.id, sectionData.id);
+        const newDocRef = doc(db, collectionReferance.id, body.sectionId);
     
         // create document with default document data {}
         const newDoc = await setDoc(newDocRef, {});

@@ -15,7 +15,7 @@ export async function DELETE(req : NextRequest)
     try 
     {
         const collectionReferance = collection(db, 'document');
-        const docReferance = doc(db,  collectionReferance.id, sectionData.id)    
+        const docReferance = doc(db,  collectionReferance.id, sectionData.sectionId)    
         await deleteDoc(docReferance);
         
         return NextResponse.json({ status : 'deleted document' })
