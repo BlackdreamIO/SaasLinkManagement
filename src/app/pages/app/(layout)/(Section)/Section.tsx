@@ -3,7 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import { cn } from "@/lib/utils";
 import useDisableElements from "@/hook/useDisableElements";
-import useGenerateCryptoUUID from "@/hook/useGenerateCryptoUUID";
+import GenerateCryptoUUID from "../../../../../globalFunction/GenerateCryptoUUID";
 import { FetchGET, FetchPOST, FetchPUT } from "@/hook/useFetch";
 import { LinkItemScheme } from "@/scheme/LinkSection";
 
@@ -87,7 +87,7 @@ export const Section = memo((props : SectionProps) => {
         }
         showToastContent({ title : `Creating New Link ${linkData.title}`, descirption : `Url ${linkData.link}` });
         
-        const randomUUID = useGenerateCryptoUUID({ length : 10 });
+        const randomUUID = GenerateCryptoUUID({ length : 10 });
         const response : any = await FetchPOST({ url : 'http://localhost:3000/api/link/create', body : { sectionId : sectionName, linkId : randomUUID, linkName : linkData.title, linkUrl : linkData.link } });
         
         response.ok ? handleFetchLinks() : console.error('Link call <handleFetchLinks()>');

@@ -68,7 +68,7 @@ export function useFetch(props : useFetchInterface)
             }
         };
 
-    }, [url])
+    }, [url, body, method, requireJsonBody])
 }
 
 export async function FetchGET ({ url, returnJsonData=true } : { url : string, returnJsonData? : boolean }) 

@@ -76,7 +76,7 @@ export default function SectionHeader(props : SectionHeaderProps)
         setIsSectionEditMode(false);
     }
 
-    const isDarkMode = document.body.parentElement?.classList.contains('dark');
+    const isDarkMode = document.body.classList.contains('dark');
     
     useEffect(() => {
         const handleEffectAnimation = () => {
@@ -88,7 +88,7 @@ export default function SectionHeader(props : SectionHeaderProps)
             }, 1000);
         }
         handleEffectAnimation();
-    }, [isMovementLocked, isDarkMode])
+    }, [movementLockColor, isDarkMode])
 
     return (
         <ContextMenu>

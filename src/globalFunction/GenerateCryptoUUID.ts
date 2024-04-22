@@ -1,7 +1,7 @@
 import { webcrypto, GeneratePrimeOptionsArrayBuffer } from "crypto";
 
 
-export default function useGenerateCryptoUUID({length=5, bufferSize=4, mode="randomUUID", UintArray='16'} 
+export default function GenerateCryptoUUID({length=5, bufferSize=4, mode="randomUUID", UintArray='16'} 
     :  { length? : number, bufferSize? : number, mode? : 'randomUUID' | 'unitArray', UintArray? : '8' | '16' | '32' }) 
 {
     // Create A New UintArray By The BufferSize

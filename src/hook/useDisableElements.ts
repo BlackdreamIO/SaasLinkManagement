@@ -14,11 +14,11 @@ export default function useDisableElements(perameter:any, timeMS=2000)
         setInterrupted(true);
         
         return () => clearTimeout(currentTimeout);
-    }, [perameter])
+    }, [perameter, timeMS])
 
     useEffect(() => {
         setShowElements(true);
-    }, [perameter]);
+    }, [perameter, timeMS]);
  
     
     return [showElement, setShowElements];

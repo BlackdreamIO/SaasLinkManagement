@@ -65,7 +65,7 @@ export default function LinkCreator({ onLinkCreate } : { onLinkCreate : ( linkDa
                 <DialogHeader>
                     <DialogTitle>Edit profile</DialogTitle>
                     <DialogDescription>
-                        Make changes to your profile here. Click save when you're done.
+                        Make changes to your profile here. Click save when youre done.
                     </DialogDescription>
                 </DialogHeader>
                 <Box className="dark:bg-neutral-900 bg-neutral-100 shadow-md p-3 w-full rounded-lg border border-transparent hover:border-neutral-700 space-y-6">
