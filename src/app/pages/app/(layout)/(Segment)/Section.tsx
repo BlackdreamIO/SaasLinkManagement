@@ -99,8 +99,9 @@ export const Section = memo((props : SectionProps) => {
     
     const handleFetchLinks = async () => {
         const response : any = await FetchPOST({ url : '/api/link/get', useJsonStringify : true, body : { sectionId : sectionName }});
-        const josnData = await response.json();
-        josnData.links ? setLinks(josnData.links) : console.error('failed to fetch links');
+        const jsonData = await response.json();
+        console.log(response);
+        jsonData.links ? setLinks(jsonData.links) : console.error(`failed to fetch links ${response}`);
         
         if(!response) alert('failed to fetch links please try refreshing the browser');
     }

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+
 interface useFetchInterface  {
     method? : 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'CUSTOM',
     url : string,
@@ -78,7 +81,7 @@ export async function FetchGET ({ url, returnJsonData=true } : { url : string, r
         const response = await fetch(url, {
             method : 'GET',
             headers : { 'Content-Type': 'application/json' },
-            cache : 'no-cache',
+            cache : 'no-store',
             next : {
                 revalidate : 0
             }
@@ -101,7 +104,7 @@ export async function FetchPOST ({ url, body, useJsonStringify=true } : { url : 
             method : 'POST',
             headers : { 'Content-Type': 'application/json' },
             body : useJsonStringify ? JSON.stringify(body) : body,
-            cache : 'no-cache',
+            cache : 'no-store',
             next : {
                 revalidate : 0
             }
@@ -130,7 +133,7 @@ export async function FetchPUT ( arg : FetchPUTInterface)
             method : 'PUT',
             headers : { 'Content-Type': 'application/json' },
             body : useJsonStringify ? JSON.stringify(body) : body,
-            cache : 'no-cache',
+            cache : 'no-store',
             next : {
                 revalidate : 0
             }
@@ -158,7 +161,7 @@ export async function FetchDELETE ( arg : FetchDELETEInterface)
             method : 'DELETE',
             headers : { 'Content-Type': 'application/json' },
             body : useJsonStringify ? JSON.stringify(body) : body,
-            cache : 'no-cache',
+            cache : 'no-store',
             next : {
                 revalidate : 0
             }
