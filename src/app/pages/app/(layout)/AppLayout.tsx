@@ -16,6 +16,8 @@ import { FetchGET, FetchPOST, FetchDELETE } from '@/hook/useFetch';
 import { Section } from './(Segment)/Section';
 import GenerateCryptoUUID from '@/globalFunction/GenerateCryptoUUID';
 
+export const revalidate = 0;
+
 export default function AppLayout() {
     
     const [items, setItems] = useState<string[]>([]);
