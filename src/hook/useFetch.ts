@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const revalidate = 0;
+//export const revalidate = 0;
 export const dynamic = 'force-dynamic';
 
 interface useFetchInterface  {
