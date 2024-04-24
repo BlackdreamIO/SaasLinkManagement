@@ -66,23 +66,41 @@
     }
   }
 
-  @layer base {
+@layer base {
     * {
-      @apply border-border;
+    @apply border-border;
     }
     body {
-      @apply bg-background text-foreground;
+    @apply bg-background text-foreground;
     }
-  }
-  @layer utilities {
+}
+@layer utilities {
     /* Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar {
-      display: none;
+        display: none;
     }
-
     .no-scrollbar {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-      
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+    .scrollbar-dark::-webkit-scrollbar {
+        display: block;
+        background-color: black;
+        border-radius: 10px;
+        width: 5px;
+    }
+    .scrollbar-dark::-webkit-scrollbar-thumb {
+        background-color: white; /* Example color for the thumb */
+        border-radius: 5px; /* Example border radius for the thumb */
+    }
+    .scrollbar-light::-webkit-scrollbar {
+        display: block;
+        background-color: black;
+        border-radius: 10px;
+        width: 5px;
+    }
+    .scrollbar-light::-webkit-scrollbar-thumb {
+        background-color: mediumspringgreen; /* Example color for the thumb */
+        border-radius: 5px; /* Example border radius for the thumb */
     }
 }

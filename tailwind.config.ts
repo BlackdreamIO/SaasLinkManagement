@@ -20,6 +20,16 @@ const config = {
       },
       extend: {
         colors: {
+            theme : {
+                bgPrimary : '#090909',
+                bgSecondary : '#131416',
+                bgTartiary : '#121314',
+                bgFourth : '#1A1C1F',
+                bgPrimaryLight: '#F0F0F0',
+                bgSecondaryLight: '#E0E0E0',
+                bgTartiaryLight: '#F5F5F5',
+                bgFourthLight: '#FAFAFA'
+            },
             border: "hsl(var(--border))",
             input: "hsl(var(--input))",
             ring: "hsl(var(--ring))",
@@ -98,6 +108,9 @@ const config = {
             'max-2xl' : {max : '1536px'},
             'max-3xl' : {max : '1920px'},
     	},
+        maxHeight : {
+            'auto' : 'auto'
+        },
       },
     },
   plugins: [require("tailwindcss-animate")],
