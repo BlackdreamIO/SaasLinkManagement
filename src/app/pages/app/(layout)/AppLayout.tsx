@@ -2,7 +2,7 @@
 
 import { Box, Flex } from "@chakra-ui/react";
 
-import LeftNavigations from "./LeftNavigation/LeftNavigations";
+import LeftNavigations from "./(LeftNavigation)/LeftNavigations";
 import LinkSide from "./LinkSide/LinkSide";
 import useTheme from "@/hook/useTheme";
 
