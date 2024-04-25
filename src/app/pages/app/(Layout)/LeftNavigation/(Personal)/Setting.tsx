@@ -40,7 +40,7 @@ export default function Setting(props : SettingProps)
                     <DialogTitle className="dark:text-white text-black">Setting</DialogTitle>
                 </DialogHeader>
 
-                <Tabs defaultValue="account" className="w-full mt-5">
+                <Tabs defaultValue="account" className="w-full mt-5 p-0">
                     <TabsList className="w-full flex flex-row justify-around max-md:justify-center max-sm:flex-wrap h-auto rounded-2xl dark:bg-theme-bgPrimary bg-theme-bgPrimaryLight">
                         <TabsTrigger className="!bg-transparent outline-none dark:text-neutral-500 dark:hover:text-white text-neutral-500 hover:text-black" value="account">Account</TabsTrigger>
                         <TabsTrigger className="!bg-transparent outline-none dark:text-neutral-500 dark:hover:text-white text-neutral-500 hover:text-black" value="customization">Customization</TabsTrigger>

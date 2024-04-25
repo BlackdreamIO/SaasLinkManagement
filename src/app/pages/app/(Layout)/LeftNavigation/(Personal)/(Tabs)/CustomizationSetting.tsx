@@ -7,15 +7,17 @@ import Image from "next/image";
 import AppDarkThemeImage from '../../../../../../../../public/images/appDarkTheme.png';
 import AppLightThemeImage from '../../../../../../../../public/images/appLightTheme.png';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import useTheme from "@/hook/useTheme";
+import useLocalStorage from "@/hook/useLocalStorage";
 
 export const CustomizationSetting = () => {
     const [currentTheme, setCurrentTheme] = useState('dark');
+    const [theme, setTheme] = useTheme({ theme : 'system' });
+    const [localStorageTheme ] = useLocalStorage('theme');
 
     useEffect(() => {
-        const isDarkTheme = document.body.classList.contains('dark');
-        setCurrentTheme( isDarkTheme ? 'dark' : 'light');
-    }, [currentTheme])
-    
+        setCurrentTheme(theme);
+    }, [currentTheme, theme, localStorageTheme])
 
     return (
         <Card className="!bg-transparent border-none">
@@ -34,7 +36,8 @@ export const CustomizationSetting = () => {
                 <CardContent className="w-full space-y-4 p-0">
                     <Flex justifyContent={'center'} alignItems={'center'} className="flex-row max-md:flex-col space-x-3 max-md:space-x-0 max-md:space-y-3">
                         <Card className="w-6/12 max-md:w-full shadow-black shadow-lg border border-transparent hover:border-emerald-500 p-2 space-y-3
-                        max-sm:text-xs dark:bg-neutral-950 bg-theme-bgSecondaryLight">
+                        max-sm:text-xs dark:bg-neutral-950 bg-theme-bgSecondaryLight"
+                        onClick={() => setTheme('dark')}>
                             <CardTitle className={`${currentTheme == 'dark' ? 'dark:text-sky-500 text-sky-500' : 'dark:text-white text-black*'}`}>
                                 DARK THEME
                                 {
@@ -54,7 +57,8 @@ export const CustomizationSetting = () => {
                             </AspectRatio>
                         </Card>
                         <Card className="w-6/12 max-md:w-full shadow-black shadow-lg border border-transparent hover:border-emerald-500 p-2 space-y-3
-                        max-sm:text-xs dark:bg-neutral-950 bg-theme-bgSecondaryLight">
+                        max-sm:text-xs dark:bg-neutral-950 bg-theme-bgSecondaryLight"
+                        onClick={() => setTheme('light')}>
                             <CardTitle className={`${currentTheme == 'light' ? 'dark:text-sky-500 text-sky-500' : 'dark:text-white text-black'}`}>
                                 LIGHT THEME
                                 {
