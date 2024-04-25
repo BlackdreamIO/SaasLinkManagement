@@ -108,7 +108,7 @@ export default function PersonalSection()
                 </Flex>
             </VStack>
             
-            <Setting onOpenChange={() => {}} openSetting/>
+            <Setting onOpenChange={() => setOpenSettingDialog(false)} openSetting={openSettingDialog} />
 
         </Box>
     )

@@ -2,7 +2,7 @@
 
 import { Box, Flex } from "@chakra-ui/react";
 
-import LeftNavigation from "./LeftNavigation/LeftNavigation";
+import LeftNavigations from "./LeftNavigation/LeftNavigations";
 import LinkSide from "./LinkSide/LinkSide";
 import useTheme from "@/hook/useTheme";
 
@@ -12,7 +12,7 @@ export default function AppLayout()
 
     return (
         <Flex dir="row" gap={5}>
-            <LeftNavigation />
+            <LeftNavigations />
             <LinkSide />
         </Flex>
     )

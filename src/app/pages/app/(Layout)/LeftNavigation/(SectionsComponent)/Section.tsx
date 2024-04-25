@@ -15,7 +15,7 @@ export default function Section()
     return (
         <ContextMenu>
             <ContextMenuTrigger className='w-full px-4'>
-                <Box className='w-full dark:bg-theme-bgPrimary dark:hover:bg-theme-bgSecondary py-3 px-3 rounded-xl'>
+                <Box className='w-full dark:bg-theme-bgPrimary dark:hover:bg-theme-bgSecondary hover:bg-theme-bgSecondary/5 py-3 px-3 rounded-xl'>
                     <Flex direction={'row'} className='space-x-3 items-center justify-start'>
                         <FaInbox/> <Text>Roadmaps </Text>
                     </Flex>
