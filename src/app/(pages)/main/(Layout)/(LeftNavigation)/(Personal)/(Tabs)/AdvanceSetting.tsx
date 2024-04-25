@@ -14,7 +14,7 @@ export default function AdvanceSetting()
             <CardHeader className="space-y-3 p-0 py-5">
                 <CardTitle className="dark:text-white text-black">Advance</CardTitle>
                 <CardDescription className="dark:text-neutral-400 text-black">
-                    you will find all advance options here. Click save when you're done.
+                    you will find all advance options here. Click save when you have done.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2 p-0 mt-10 min-h-52">
@@ -30,7 +30,7 @@ export default function AdvanceSetting()
                             </DialogHeader>
                             <DialogDescription>
                                 <DialogTitle className="dark:text-white text-black mb-2">Delete This Account</DialogTitle>
-                                <Text>Warning Once You've Delete The Account You Can Never Restore Your Data Back</Text>
+                                <Text>Warning Once You Have Delete The Account You Can Never Restore Your Data Back</Text>
                             </DialogDescription>
                             <DialogFooter className="flex-col">
                                 <Button onClick={() => setOpenDeleteDialog(false)} variant={'destructive'} className="my-2">Confirm</Button>

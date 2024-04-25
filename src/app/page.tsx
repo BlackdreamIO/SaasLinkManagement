@@ -1,6 +1,5 @@
 'use client'
 
-import Webview from './pages/web/Webview';
 import { Toaster } from "@/components/ui/toaster"
 
 export default function page() 

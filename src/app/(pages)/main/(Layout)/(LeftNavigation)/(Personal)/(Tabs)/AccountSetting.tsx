@@ -30,7 +30,7 @@ export const AccountSetting = (props : AccountSettingType) => {
             <CardHeader className="space-y-3 p-0 py-5">
                 <CardTitle className="dark:text-white text-black">Account</CardTitle>
                 <CardDescription className="dark:text-neutral-400 text-black">
-                    Make changes to your account here. Click save when you're done.
+                    Make changes to your account here. Click save when you have done.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2 p-0 py-5">

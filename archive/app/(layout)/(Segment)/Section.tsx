@@ -3,7 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import { cn } from "@/lib/utils";
 import useDisableElements from "@/hook/useDisableElements";
-import GenerateCryptoUUID from "../../../../../globalFunction/GenerateCryptoUUID";
+import GenerateCryptoUUID from "@/globalFunction/GenerateCryptoUUID";
 import { FetchGET, FetchPOST, FetchPUT } from "@/hook/useFetch";
 import { LinkItemScheme } from "@/scheme/LinkSection";
 
