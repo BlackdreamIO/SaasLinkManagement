@@ -83,3 +83,5 @@ export const LinkCreateDialog = forwardRef((props : LinkCreateDialogProps, ref) 
         </Dialog>
     )
 })
+
+LinkCreateDialog.displayName = "LinkCreateDialog";
