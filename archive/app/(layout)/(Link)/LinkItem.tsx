@@ -35,7 +35,7 @@ interface SectionItemInterfaceProps extends LinkItemScheme {
 
 export default function LinkItem(props : SectionItemInterfaceProps) 
 {
-    const { title, link, onLinkUpdate, id, sectionName } = props;
+    const { title, url, onLinkUpdate, id, sectionName } = props;
 
     const [editTitle, setEditTitle] = useState(false);
     const [editUrl, setEditUrl] = useState(false);
