@@ -45,7 +45,7 @@ export const LinkCreateDialog = forwardRef((props : LinkCreateDialogProps, ref) 
                 <DialogHeader>
                     <DialogTitle className='text-left text-lg max-sm:text-sm'>Create New Link</DialogTitle>
                     <DialogDescription className='text-left max-sm:text-xs'>
-                        Make changes to your profile here. Click save when you're done.
+                        {`Make changes to your profile here. Click save when you're done.`}
                     </DialogDescription>
                 </DialogHeader>
                 <VStack className='w-full mt-5 mb-5'>

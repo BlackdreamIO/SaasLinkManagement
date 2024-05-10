@@ -17,6 +17,7 @@ export const SectionLinks = ({ Links } : { Links : LinkItemScheme[] }) => {
                         handleTitleEdit={() => {}}
                         handleUrlEdit={() => {}}
                         handleDelete={() => {}}
+                        key={id}
                     />
                 ))
             }
