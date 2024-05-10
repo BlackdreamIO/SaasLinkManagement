@@ -1,19 +1,23 @@
 'use client';
 
-import { Box, Flex } from "@chakra-ui/react";
-
-import LeftNavigations from "./(LeftNavigation)/LeftNavigations";
-import LinkSide from "./(LinkSide)/LinkSide";
 import useTheme from "@/hook/useTheme";
+
+import { Flex } from "@chakra-ui/react";
+
+import AppNavbar from "./(Navbar)/AppNavbar";
+import SectionContainer from "./(Content)/(Section)/SectionContainer";
+import { SectionContextProvider } from "@/context/SectionContextAPI";
 
 export default function AppLayout() 
 {
-    const [theme, setTheme] = useTheme({ theme : 'system' });   
+    const [] = useTheme({ theme : 'system' });   
 
     return (
-        <Flex dir="row" gap={5}>
-            <LeftNavigations />
-            <LinkSide />
+        <Flex onContextMenu={(e) => e.preventDefault()} direction={'column'} gap={5}>
+            <SectionContextProvider>
+                <AppNavbar />
+                <SectionContainer />
+            </SectionContextProvider>
         </Flex>
     )
 }
