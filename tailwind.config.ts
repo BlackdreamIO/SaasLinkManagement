@@ -21,9 +21,10 @@ const config = {
       extend: {
         colors: {
             theme : {
-                bgPrimary : '#090909',
-                bgSecondary : '#131416',
-                bgTartiary : '#121314',
+                bgBase : '#000000',
+                bgPrimary : '#040404',
+                bgSecondary : '#080808',
+                bgTartiary : '#0F0F0F',
                 bgFourth : '#1A1C1F',
                 bgPrimaryLight: '#F0F0F0',
                 bgSecondaryLight: '#E0E0E0',
