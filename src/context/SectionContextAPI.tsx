@@ -1,23 +1,30 @@
 'use client'
 
-import { createContext, useContext, useState, Dispatch, SetStateAction, ReactNode, useEffect, useOptimistic, startTransition } from 'react';
+import { createContext, useContext, useState, Dispatch, SetStateAction, ReactNode, useEffect } from 'react';
+import { FilterSectionScheme, SectionScheme } from '@/scheme/SectionScheme';
+import { createSection, deleteSection, getSections, updateSection } from '@/app/actions/section';
+import { CheckArrayEquality } from '@/globalFunction/CheckArrayEquality';
 import useLocalStorage from '@/hook/useLocalStorage';
-import { SectionScheme } from '@/scheme/SectionScheme';
-import { createSection, getSections, updateSection } from '@/app/actions/section';
+import { LinkItemScheme } from '@/scheme/LinkSection';
 
 interface SectionContextData {
     contextSections: SectionScheme[];
     setContextSections: Dispatch<SetStateAction<SectionScheme[]>>;
-    
-    optimisticSections? : SectionScheme[];
-    updateOptimisticSections? : (action: SectionScheme) => void;
+
+    filteredContextSections: FilterSectionScheme[];
+    setFilteredContextSections: Dispatch<SetStateAction<FilterSectionScheme[]>>;
+
+    enableFilterContextSections : boolean;
+    setEnableFilterContextSections: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface SectionContextType extends SectionContextData {
     CreateSection: (section: SectionScheme) => Promise<void>;
-    GetSections: () => Promise<SectionScheme[]>;
-    UpdateSection : ({currentSectionID, updatedSection} : { currentSectionID : string, updatedSection : SectionScheme }) => Promise<SectionScheme[]>;
-    DeleteSections: (id: string) => Promise<void>;
+    GetSections: (revalidateFetch? : boolean) => Promise<SectionScheme[]>;
+    UpdateSection : ({currentSection, updatedSection} : { currentSection : SectionScheme, updatedSection : SectionScheme }) => Promise<void>;
+    DeleteSections: (id: string) => Promise<any>;
+    SaveContextSections : () => void;
+    RestoreContextSections : () => void;
 }
 
 type SectionContextProviderProps = {
@@ -31,98 +38,190 @@ export const useSectionContext = () => useContext(SectionContext);
 export const SectionContextProvider = ({children} : SectionContextProviderProps) => {
 
     const [contextSections, setContextSections] = useState<SectionScheme[]>([]);
+    const [filteredContextSections, setFilteredContextSections] = useState<FilterSectionScheme[]>([]);
+    const [originalContextSections, setOriginalContextSections] = useState<SectionScheme[]>([]);
+
     const [localStorageSections, setLocalStorageSections] = useLocalStorage<SectionScheme[]>('sectionsCache', []);
+    const [serverOperationInterrupted, setServerOperationInterrupted] = useLocalStorage<boolean>('operationInterrupted', false);
 
-    const [optimisticSections, updateOptimisticSections] = useOptimistic<SectionScheme[], SectionScheme>(
-        contextSections || [],
-        (currentState, updatedSection) => {
-            return [...currentState, updatedSection];
-        }
-    );
+    {/* the filteredContextSections data will come from the component that does the filtering */}
+    const [enableFilterContextSections, setEnableFilterContextSections] = useState<boolean>(false);
 
-    const CreateSection = async (section : SectionScheme) => {
-        const newSection = {...section};
-
-        startTransition(() => {
-            updateOptimisticSections(newSection);
-            console.log({optimisticSections : optimisticSections, contextSections : contextSections});
-        })
-
+    const CreateSection = async (newSection : SectionScheme) => {
         try 
         {
-            const response : any = await createSection(section);
-            if(response) {
+            setServerOperationInterrupted(true);
+            setContextSections(prev => [...prev, newSection]);
+            const response : any = await createSection(newSection);
+            if(response.status == 200) {
+                SaveContextSections();
+                setServerOperationInterrupted(false);
+            }
+            else {
+                setServerOperationInterrupted(true);
                 await GetSections(true);
+                setServerOperationInterrupted(false);
             }
         } 
-        catch (error) {
-            console.error(error);
+        catch (error : any) {
+            console.log(error);
+            throw new Error(error);
         }
     };
 
     const GetSections = async (revalidateFetch? : boolean) => {
-        if(localStorageSections.length > 0 && !revalidateFetch) {
-            return localStorageSections;
-        }
-        else
+        if(localStorageSections.length > 0 && !revalidateFetch) return localStorageSections;
+        try 
         {
-            try 
-            {
-                const response = await getSections();
-                if(response) {
-                    setContextSections(response);
-                    setLocalStorageSections(response);
-                }
-                return [];
-            } 
-            catch (error) { return []; }
+            setServerOperationInterrupted(true);
+            setLocalStorageSections([]);
+            const response : any[] = await getSections();
+            setServerOperationInterrupted(false);
+            if(response) {
+                // this will remove links from a section that doesnt have id title or url type
+                const updatedResponse : any[] = response.map((section : SectionScheme) => {
+                     if(section.data != undefined) {
+                        return {
+                            ...section,
+                            data : Object.values(section.data).filter((link) => link.id != undefined)
+                        }
+                     }
+                })
+                setContextSections(updatedResponse);
+                setOriginalContextSections(response);
+            }
+            return response;
+        } 
+        catch (error : any) { 
+            console.log(error);
+            throw new Error(error);
         }
     };
 
-    const UpdateSection = async ({currentSectionID, updatedSection} : { currentSectionID : string, updatedSection : SectionScheme }) => {
+    const UpdateSection = async ({currentSection, updatedSection} : { currentSection : SectionScheme, updatedSection : SectionScheme }) => {
         try 
         {
-            const data = { currentSectionID, updatedSection };
-            const response = await updateSection(data);
-            
-            if(response) {
-                await GetSections(true);
+            setServerOperationInterrupted(true);
+
+            setContextSections(prevContextSections => {
+                const sectionIndex = prevContextSections.findIndex(section => section.id === currentSection.id);
+                if (sectionIndex !== -1) {
+                    const newContextSections = [...prevContextSections];
+                    newContextSections[sectionIndex] = updatedSection;
+                    return newContextSections;
+                }
+                else {
+                    console.error('Section not found');
+                    return prevContextSections;
+                }
+            });
+                
+            const response = await updateSection(currentSection.id, updatedSection);            
+
+            if(response.status == 200) {
+                console.log(response.message);
+                setOriginalContextSections(contextSections);
+                setServerOperationInterrupted(false);
             }
-            
-            return [];
+            else {
+                setContextSections(originalContextSections);
+                await GetSections(true);
+                setServerOperationInterrupted(false);
+                console.error('ERR : ', response.message);
+            }
         } 
-        catch (error) { return []; }
+        catch (error : any) {  
+            RestoreContextSections();
+            setServerOperationInterrupted(false);
+        }
     };
     
     const DeleteSections = async (id:string) => {
-        setContextSections(prevSections => {
-            const updatedSections = prevSections.filter((section) => section.id !== id);
-            return updatedSections;
-        });
+        if(id.length < 3) return;
+        setServerOperationInterrupted(true);
+        if(enableFilterContextSections) {
+            setFilteredContextSections(prevSections => prevSections.filter((section) => section.id !== id));
+        }
+        setContextSections(prevSections => prevSections.filter((section) => section.id !== id));
+        try 
+        {
+            const currentTimeout = setTimeout(async () => {
+                const response = await deleteSection(id);
+                if(response.status == 200) {
+                    SaveContextSections();
+                    setServerOperationInterrupted(false);
+                }
+                else {
+                    console.error('something went wrong while deleting the section please try again');
+                    RestoreContextSections();
+                    setServerOperationInterrupted(false);
+                }
+            }, 500);
+
+            return () => clearTimeout(currentTimeout);
+        } 
+        catch (error : any) {
+            RestoreContextSections();
+            throw new Error(error);
+        }
     }
 
-    // Sync contextSections with localStorageSections on component mount
-    // Empty dependency array ensures this effect runs only once on mount
-    useEffect(() => {
-        if (localStorageSections.length > 0) {
-            setContextSections(localStorageSections);
+    const SaveContextSections = () => {
+        setOriginalContextSections(contextSections);
+    }
+    const RestoreContextSections = () => {
+        setContextSections(originalContextSections);
+    }
+
+    const handleServerOperationInterrupted = async () => {
+        const latestSections = await getSections();
+        
+        if(latestSections.length < 1) {
+            console.warn('serverOperationInterruptEvenet : [data did not fetched]');
+            return;
         }
+        
+        if(CheckArrayEquality(latestSections, localStorageSections)) {
+            console.error('serverOperationInterruptEvenet : [latestSections and currentSections are same after refetch]');
+        }
+        else {
+            console.error('serverOperationInterruptEvenet : [data are not similler require full fetch] ');
+            console.log("GETTING NEW DATA");
+            await GetSections(true);
+        }
+    }
+
+    useEffect(() => {
+        if(localStorageSections.length < 1) {
+            GetSections(true);
+            return;
+        }
+        if(serverOperationInterrupted) {
+            handleServerOperationInterrupted();
+        }
+        setContextSections(localStorageSections);
+        setOriginalContextSections(localStorageSections);
     }, []);
 
-    // Sync localStorageSections with contextSections whenever it changes
     useEffect(() => {
         setLocalStorageSections(contextSections);
     }, [contextSections]);
-
+    
     
     const contextValue: SectionContextType = {
         CreateSection,
         GetSections,
-        DeleteSections,
         UpdateSection,
+        DeleteSections,
+        SaveContextSections,
+        RestoreContextSections,
 
         contextSections,
-        setContextSections
+        setContextSections,
+        enableFilterContextSections,
+        setEnableFilterContextSections,
+        filteredContextSections,
+        setFilteredContextSections
     };
 
     return (
@@ -131,46 +230,3 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
         </SectionContext.Provider>
     )
 }
-
-
-
-/*
-
-const CreateSection = async (section : SectionScheme) => {
-        if(section.id.length > 3) {
-            setContextSections(prev => [...prev, section]);
-            setLocalStorageSections(contextSections);
-        }
-        else {
-            alert('Please Enter Section Name With Least 3 Character Long');
-        }
-        console.log('Creating new section in db... ');
-    }
-
-    const UpdateSection = async (updatedSection: SectionScheme) => {
-        setContextSections(prevSections => {
-            const updatedSections = prevSections.map(section => {
-                if (section.id === updatedSection.id) {
-                    return {
-                        ...section,
-                        data: updatedSection.data,
-                        created_at: updatedSection.created_at
-                    };
-                }
-                return section; // Return unchanged section if not updated
-            });
-            return updatedSections;
-        });
-        setLocalStorageSections(contextSections);
-        return contextSections;
-    };
-
-    const DeleteSections = async (id:string) => {
-        setContextSections(prevSections => {
-            const updatedSections = prevSections.filter((section) => section.id !== id);
-            return updatedSections;
-        });
-        setLocalStorageSections(contextSections);
-    }
-
-*/

@@ -5,7 +5,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function createSection(newSection : SectionScheme)
 {
-    const url = 'https://663c4a1517145c4d8c35b1ee.mockapi.io/links';
+    const url = 'http://localhost:3000/api/section/create';
 
     const res = await fetch(url, {
         method : 'POST',
@@ -21,9 +21,9 @@ export async function createSection(newSection : SectionScheme)
     return resJson;
 }
 
-export async function getSections() : Promise<SectionScheme[]>
+export async function getSections()
 {
-    const url = 'https://663c4a1517145c4d8c35b1ee.mockapi.io/links';
+    const url = 'http://localhost:3000/api/section/get';
 
     const response = await fetch(url, {
         method : 'GET',
@@ -42,45 +42,52 @@ export async function getSections() : Promise<SectionScheme[]>
     return data;
 }
 
-export async function updateSection({currentSectionID, updatedSection} : { currentSectionID : string, updatedSection : SectionScheme })
+export async function updateSection(currentSectionID : string, updatedSection : SectionScheme)
 {
-    const sUrl = 'https://663c4a1517145c4d8c35b1ee.mockapi.io/links';
-
-    console.log({currentSectionID : currentSectionID, updatedSection : updatedSection});
+    const url = 'http://localhost:3000/api/section/update';
     
-    const section_response = await fetch(sUrl, {
-        method : 'GET',
-        cache : 'no-store',
-        headers: { 'content-type' : 'application/json' }
-    });
-
-    const sectionJson = await section_response.json();
-
-    const currentSectionOneID = sectionJson.find((section : any) => section.id == currentSectionID)?.ids;
-
-    if(sectionJson && currentSectionOneID) {
-        const url = `https://663c4a1517145c4d8c35b1ee.mockapi.io/links/${currentSectionOneID}`;
-
-        const res = await fetch(url, {
-            method : 'PUT',
-            cache : 'no-store',
-            headers: {'content-type':'application/json'},
-            body : JSON.stringify({
-                id : updatedSection.id,
-                data : updatedSection.data,
-                created_at : 'unknownTime'
-            })
-        });
-        const jsonData = await res.json();
-        revalidatePath("/main");
-        return jsonData;
+    const bodyDataWithTitleUpdate = {
+        id : currentSectionID,
+        newID : updatedSection.id,
+        data : updatedSection.data  
     }
-
-    // const resJson = await res.json();
-    //console.log(res);
+    const bodyData = {
+        id : currentSectionID,
+        newID : updatedSection.id,
+        data : updatedSection.data
+    }
+    console.log(bodyData);
     
+
+    const currentBodyData = currentSectionID === updatedSection.id ? bodyData : bodyDataWithTitleUpdate
+
+    const response = await fetch(url, {
+        method : 'PUT',
+        cache : 'no-store',
+        headers: { 'content-type' : 'application/json' },
+        body : JSON.stringify(bodyData)
+    });
 
     revalidatePath("/main");
 
-    return [];
+    const responseJson = await response.json();
+    return responseJson;
 }
+
+export async function deleteSection(deleteSectionID : string )
+{
+    const url = 'http://localhost:3000/api/section/delete';
+
+    const response = await fetch(url, {
+        method : 'DELETE',
+        cache : 'no-store',
+        headers: { 'content-type' : 'application/json' },
+        body : JSON.stringify({ id : deleteSectionID })
+    });
+
+    revalidatePath("/main");
+
+    const responseJson = await response.json();
+    return responseJson;
+}
+

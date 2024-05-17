@@ -8,42 +8,45 @@ import {
     setDoc, 
     deleteDoc, 
 } from 'firebase/firestore';
-import { db } from "@/database/firebaseConfig";
+import { db } from "@/database/firebase";
 
 
 // UPDATE SINGLE DOCUMENT
-
 export async function PUT(req : NextRequest) 
 {
-    const sectionData = await req.json();
+    const { id, newID, data } = await req.json();
 
     try 
     {
         const collectionReferance = collection(db, 'document');
-        const originalDocumentReferance = doc(db, collectionReferance.id, sectionData.id);
+        const originalDocumentReferance = doc(db, collectionReferance.id, id);
         const snapshot = await getDoc(originalDocumentReferance);
 
-        if (snapshot.exists()) // check if the document exists
+        if (snapshot.exists()) // check if the document exists and current id is not same as new orhetwise it will delete the document
         {
-            const data = snapshot.data(); // get original document data
-            const mergedData = { ...sectionData.data, ...data };
+            const snapshotData = snapshot.data(); // get original document data
+            const mergedData = { ...snapshotData, ...data };
 
-            const currentDocumentRef = sectionData.newID == "" ? originalDocumentReferance : doc(db, collectionReferance.id, sectionData.newID);
-            
-            await setDoc(currentDocumentRef, mergedData, { merge : true });
+            if(newID == undefined || newID == "" || newID == id)
+            {
+                await setDoc(originalDocumentReferance, mergedData, { merge : true });
+                return NextResponse.json({ status : 200, message : 'updated' });
+            }
+            else {
+                await setDoc(doc(db, collectionReferance.id, newID), mergedData, { merge : true });
+                await deleteDoc(originalDocumentReferance);
 
-            if(sectionData.newID != "") { await deleteDoc(originalDocumentReferance); }
-            
-            return NextResponse.json({ status : 'updated' });
+                return NextResponse.json({ status : 200, message : 'updated with new document create data merge' });
+            }
         }
         else 
         {
-            return NextResponse.json({ status : 'document does not exist' });
+            return NextResponse.json({ status : 404, message : 'document does not exist' });
         }
 
     }
     catch (err) 
     {
-        return NextResponse.json({ status : `failed to updated ${err}` });
+        return NextResponse.json({ status : 500, message : `failed to updated ${err}` });
     }
 }

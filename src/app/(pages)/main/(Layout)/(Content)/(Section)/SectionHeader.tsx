@@ -30,7 +30,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 export default function SectionHeader(props : SectionHeaderProps) 
 {
     const { 
-        sectionTitle, 
+        sectionTitle,
+        sectionLinksLength,
         handleEditSectionTitle, 
         handleToggleMinimize, 
         handleOnSectionDelete,
@@ -45,9 +46,11 @@ export default function SectionHeader(props : SectionHeaderProps)
         setIsSectionEditMode(false);
     }
 
-    const handleApplyEdit = () => {
-        handleEditSectionTitle?.(newSectionName);
-        setIsSectionEditMode(false);
+    const handleApplyEdit = () => {        
+        if(newSectionName.length > 3) {
+            handleEditSectionTitle?.(newSectionName);
+            setIsSectionEditMode(false);
+        }
     }
 
     const handleSectionDelete = () => {
@@ -64,14 +67,20 @@ export default function SectionHeader(props : SectionHeaderProps)
 
     return (
         <ContextMenu>
-            <ContextMenuTrigger className="w-full">
+            <ContextMenuTrigger className="w-full dark:selection:bg-neutral-100 dark:selection:text-black">
                 <HStack justify={'space-between'} px={20} className="group py-5 max-xl:py-3 shadow-xl">
                     {
                         isSectionEditMode ? (
-                            <HStack>
-                                <Input placeholder={sectionTitle} onChange={(e) => setNewSectionName(e.target.value)} className="bg-transparent h-12" />
-                                <Button variant={'default'} onClick={handleApplyEdit}> Edit </Button>
-                                <Button variant={'outline'} onClick={handleEditModeClose}> Cancell </Button>
+                            <HStack className="w-full">
+                                <Input
+                                    placeholder={sectionTitle} 
+                                    onChange={(e) => setNewSectionName(e.target.value)}
+                                    defaultValue={sectionTitle}
+                                    onKeyDown={(e) => e.key == 'Enter' ? handleApplyEdit() : () => {}}
+                                    className="bg-transparent !border-none !ring-0 p-0 text-lg w-3/12" 
+                                />
+                                <Button variant={'ghost'} className="!bg-transparent dark:text-neutral-500 dark:hover:text-white" onClick={handleApplyEdit}> Edit </Button>
+                                <Button variant={'ghost'} className="!bg-transparent dark:text-neutral-500 dark:hover:text-white" onClick={handleEditModeClose}> Cancell </Button>
                             </HStack>
                         )
                         : 
@@ -85,6 +94,9 @@ export default function SectionHeader(props : SectionHeaderProps)
                         )
                     }
                     <HStack className="space-x-2 items-center max-sm:space-x-0 ml-3">
+                        <Text className="text-sm dark:text-neutral-600 font-bold font-sans text-left truncate max-xl:text-base max-sm:text-xs">
+                            {sectionLinksLength}
+                        </Text>
                         <Button className="!bg-transparent p-0 cursor-default" variant={'ghost'} onClick={() => handleToggleMinimize?.()} >
                             <MdOutlineArrowDropDown 
                                 size={'2rem'} 

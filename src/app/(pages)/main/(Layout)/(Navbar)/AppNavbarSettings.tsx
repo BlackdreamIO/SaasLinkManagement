@@ -1,8 +1,11 @@
 'use client'
 
 import { useState } from "react";
-import { useSectionContext } from "@/context/SectionContextAPI";
 import dynamic from 'next/dynamic';
+import { useSectionContext } from "@/context/SectionContextAPI";
+import GenerateCryptoUUID from "@/globalFunction/GenerateCryptoUUID";
+import useFullscreenToggle from "@/hook/useFulscreenToggle";
+import useTheme from "@/hook/useTheme";
  
 import { Box } from "@chakra-ui/react";
 
@@ -16,8 +19,6 @@ import {
     MenubarSubTrigger,
     MenubarTrigger,
 } from "@/components/ui/menubar";
-import GenerateCryptoUUID from "@/globalFunction/GenerateCryptoUUID";
-import { serverTimestamp } from "firebase/firestore";
 
 const Setting = dynamic(() => import('../(Setting)/Setting'), { ssr: false })
 
@@ -26,23 +27,36 @@ export default function AppNavbarSettings()
     const [openSettingDialog, setOpenSettingDialog] = useState(false);
     const [menubarOpen, setMenubarOpen] = useState(false);
 
-    const MenubarTriggerStyle = `dark:text-neutral-500 dark:hover:!text-black dark:hover:!bg-neutral-300 data-[highlighted]:dark:text-black data-[highlighted]:dark:bg-neutral-300 
-        text-neutral-500 hover:!text-white hover:!bg-theme-bgPrimary transition-all duration-250 text-lg max-sm:text-xs max-xl:text-sm rounded-lg`;
-    const MenuItemStyle = `dark:text-neutral-500 dark:hover:!text-black dark:hover:!bg-neutral-300 data-[highlighted]:dark:text-black data-[highlighted]:dark:bg-neutral-300 
-        text-neutral-500 hover:!text-white hover:!bg-theme-bgPrimary transition-all duration-250 text-lg max-sm:text-xs max-xl:text-sm rounded-lg`;
-    const MenubarContentStyle = `dark:bg-theme-bgPrimary dark:border-neutral-700 mt-3 min-w-80 max-sm:min-w-0 p-2`;
-    
-    const { CreateSection } = useSectionContext()!;
+    const [fullscreen, setFullscreen] = useFullscreenToggle();
+    const [theme, setTheme] = useTheme({ theme : 'system' });
+
+    const { CreateSection, GetSections } = useSectionContext()!;
 
     const CreateNewSection = async () => {
         await CreateSection({
             id : GenerateCryptoUUID({ mode : 'randomUUID', length : 10 }),
             data : [],
-            
+            createdAt : new Date()
         })
     }
 
     const handleMenubarOpen = (value : string) => setMenubarOpen(value != '');
+    
+    const handleNormalReload = () => {
+        window.location.reload();
+    }
+    const handleForceReload = async () => {
+        await GetSections(true);
+    }
+    const handleTheme = (theme : "dark" | "light" | "system") => {
+        setTheme(theme);
+    }
+    
+    const MenubarTriggerStyle = `dark:!text-neutral-400 dark:hover:font-bold dark:hover:!text-black dark:hover:!bg-neutral-300 data-[highlighted]:dark:!text-black data-[highlighted]:dark:bg-neutral-300 
+        text-neutral-500 hover:!text-white hover:!bg-theme-bgPrimary transition-all duration-250 text-sm max-sm:text-xs max-xl:text-sm rounded-lg`;
+    const MenuItemStyle = `dark:!text-neutral-400 dark:hover:font-bold dark:hover:!text-black dark:hover:!bg-neutral-300 data-[highlighted]:dark:!text-black data-[highlighted]:dark:bg-neutral-300 
+        text-neutral-500 hover:!text-white hover:!bg-theme-bgPrimary transition-all duration-250 text-sm max-sm:text-xs max-xl:text-sm rounded-lg`;
+    const MenubarContentStyle = `dark:bg-theme-bgPrimary dark:border-neutral-700 mt-3 min-w-80 max-sm:min-w-0 p-2 space-y-3`;
 
     return (
         <Box>
@@ -53,7 +67,6 @@ export default function AppNavbarSettings()
                         <MenubarItem className={MenuItemStyle} onClick={() => CreateNewSection()}>
                             New Section
                         </MenubarItem>
-                        <MenubarItem className={MenuItemStyle} disabled>New Window </MenubarItem>
                         <MenubarItem className={MenuItemStyle} disabled>New Incognito Window</MenubarItem>
                         <MenubarSub>
                             <MenubarSubTrigger className={MenubarTriggerStyle}>Export</MenubarSubTrigger>
@@ -63,7 +76,9 @@ export default function AppNavbarSettings()
                             </MenubarSubContent>
                         </MenubarSub>
                         <MenubarItem className={MenuItemStyle} onClick={() => setOpenSettingDialog(true)}> Setting </MenubarItem>
+                        <MenubarItem className={MenuItemStyle}> Keyboard Shortcut </MenubarItem>
                         <MenubarItem className={MenuItemStyle}> Check For Update </MenubarItem>
+                        <MenubarItem className={MenuItemStyle}> About </MenubarItem>
                     </MenubarContent>
                 </MenubarMenu>
                 <MenubarMenu>
@@ -72,9 +87,9 @@ export default function AppNavbarSettings()
                         <MenubarItem className={MenuItemStyle}> Zoom In + </MenubarItem>
                         <MenubarItem className={MenuItemStyle}> Zoom Out - </MenubarItem>
                         <MenubarItem disabled className={MenubarTriggerStyle}>Search</MenubarItem>
-                        <MenubarItem className={MenubarTriggerStyle}>Reload</MenubarItem>
-                        <MenubarItem className={MenubarTriggerStyle}>Force Reload {'(Fetch Again)'}</MenubarItem>
-                        <MenubarItem className={MenubarTriggerStyle}>Toggle Fullscreen</MenubarItem>
+                        <MenubarItem className={MenubarTriggerStyle} onClick={() => handleNormalReload()}>Reload</MenubarItem>
+                        <MenubarItem className={MenubarTriggerStyle} onClick={() => handleForceReload()}>Force Reload {'(Fetch Again)'}</MenubarItem>
+                        <MenubarItem className={MenubarTriggerStyle} onClick={() => setFullscreen(!fullscreen)}>Toggle Fullscreen</MenubarItem>
                     </MenubarContent>
                 </MenubarMenu>
                 <MenubarMenu>
@@ -83,15 +98,16 @@ export default function AppNavbarSettings()
                         <MenubarSub>
                             <MenubarSubTrigger className={MenubarTriggerStyle}>Theme</MenubarSubTrigger>
                             <MenubarSubContent>
-                                <MenubarItem className={MenuItemStyle}>Dark</MenubarItem>
-                                <MenubarItem className={MenuItemStyle}>Light</MenubarItem>
+                                <MenubarItem className={MenuItemStyle} onClick={() => handleTheme('dark')}>Dark</MenubarItem>
+                                <MenubarItem className={MenuItemStyle} onClick={() => handleTheme('light')}>Light</MenubarItem>
+                                <MenubarItem className={MenuItemStyle} onClick={() => handleTheme('system')}>System</MenubarItem>
                             </MenubarSubContent>
                         </MenubarSub>
                         <MenubarItem className={MenubarTriggerStyle}>Clear Cache</MenubarItem>
                     </MenubarContent>
                 </MenubarMenu>
             </Menubar>
-            <div className={`${menubarOpen ? 'opacity-60' : 'opacity-0'} fixed bg-black/60 w-full h-screen z-30 -top-0 pointer-events-none transition-all duration-150 !backdrop-blur-sm`}></div>
+            <div className={`${menubarOpen ? 'opacity-60' : 'opacity-0  pointer-events-none'} fixed bg-black/60 w-full h-screen z-30 -top-0 transition-all duration-150 !backdrop-blur-sm`}></div>
             <Setting onOpenChange={() => setOpenSettingDialog(false)} openSetting={openSettingDialog} />
         </Box>
     )

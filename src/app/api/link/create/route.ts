@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { collection, doc, deleteField, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from "@/database/firebaseConfig";
+import { collection, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from "@/database/firebase";
+import { LinkItemScheme } from "@/scheme/LinkSection";
 
 export async function POST(req : Request) 
 {
@@ -9,23 +10,26 @@ export async function POST(req : Request)
         const body = await req.json();
 
         const collectionRef = collection(db, 'document');
-        const documentRef = doc(db, collectionRef.id, body.sectionId)
+        const documentRef = doc(db, collectionRef.id, body.parentSectionID);
+        const snapshot = await getDoc(documentRef);
         
-        const linkID = body.linkId;
-        const linkName = body.linkName;
-        const linkUrl = body.linkUrl;
+        const linkData : LinkItemScheme = body.link;
 
-        await setDoc(documentRef, {
-            [linkID] : {
-                title : linkName,
-                link : linkUrl,
-                created_at : serverTimestamp()
-            }
-        }, { merge : true })
+        if(snapshot.exists()) {
+            const response =await setDoc(documentRef, {
+                [linkData.id] : {
+                    id : linkData.id,
+                    title : linkData.title,
+                    url : linkData.url,
+                    created_at : serverTimestamp()
+                }
+            }, { merge : true });
 
-        return NextResponse.json({ status : 'field created sucessfully', code : 200 });
+            return NextResponse.json({ status : 200, message : 'field created sucessfully', error : '', data : response });
+        }
+        return NextResponse.json({ status : 404, message : 'parent document was not found', error : '', data : [] });
     } 
     catch (error) {
-        return NextResponse.json({ status : `internal server error ${error}`, code : 500 });
+        return NextResponse.json({ status : 500, message : `internal server error ${error}`, error : error, data : [] });
     }
 }

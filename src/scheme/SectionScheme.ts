@@ -1,8 +1,12 @@
 import { LinkItemScheme } from "./LinkSection";
-import { serverTimestamp, FieldValue } from "firebase/firestore";
 
 export interface SectionScheme {
     id : string;
-    created_at? : FieldValue;
     data : LinkItemScheme[] | [];
+    createdAt? : Date;
+}
+
+export interface FilterSectionScheme extends SectionScheme {
+    highlightBody? : boolean;
+    queryText? : string;
 }

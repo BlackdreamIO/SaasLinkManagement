@@ -2,58 +2,58 @@
 
 import { useEffect, useState } from 'react';
 import { useSectionContext } from '@/context/SectionContextAPI';
+import { FilterSectionScheme, SectionScheme } from '@/scheme/SectionScheme';
+import { motion  } from 'framer-motion';
 
 import { Box, Flex } from "@chakra-ui/react";
 import { SectionItem } from "./SectionItem";
-import { SectionScheme } from '@/scheme/SectionScheme';
+
+const SectionItemAnimation = {
+    initial : {
+        opacity : 0,
+    },
+    fade : (i : number) => ({
+        opacity : 1,
+        transition : {
+            delay : 0.05 * i
+        }
+    })
+}
 
 export default function SectionContainer() 
 {
-    const { contextSections, GetSections, UpdateSection, DeleteSections } = useSectionContext()!; // ! non-null assertion
-    const [sections, setSections] = useState<SectionScheme[]>(contextSections);
+    const { contextSections, UpdateSection, DeleteSections, enableFilterContextSections, filteredContextSections } = useSectionContext()!; // ! non-null assertion
+    const [sections, setSections] = useState<SectionScheme[]>([]);
 
-    const handleSectionUpdate = async (currentSectionID : string, updatedSection : SectionScheme) => {
+    const handleSectionUpdate = async (currentSection : SectionScheme, updatedSection : SectionScheme) => {
         await UpdateSection({
-            currentSectionID : currentSectionID,
-            updatedSection : { 
-                id : updatedSection.id,
-                data : updatedSection.data
-            }
+            currentSection : currentSection,
+            updatedSection : updatedSection
         });
     }
 
     const handleSectionDelete = async (id : string) => {
         await DeleteSections(id);
     }
-    
-    const fetchSections = async() => {
-        const response = await GetSections();
-        setSections(response);
-    }
-
+   
     useEffect(() => {
-        fetchSections();
-    }, [])
-
-    useEffect(() => {
-        setSections(contextSections);
-    }, [contextSections])
+        enableFilterContextSections ? setSections(filteredContextSections) : setSections(contextSections);
+    }, [contextSections, enableFilterContextSections, filteredContextSections])
     
-    
-
     return (
         <Box>
             <Flex direction={'column'} className="space-y-5 mt-10 p-4 px-10 max-sm:px-2">
                 {
-                    sections.map((section : SectionScheme, index) => (
-                        <SectionItem
-                            linkItems={section.data}
-                            key={section.id}
-                            onSectionTitleEdit={(updatedSection) => handleSectionUpdate(section.id, updatedSection)}
-                            onSectionDelete={handleSectionDelete}
-                            id={section.id}
-                            url=''
-                        />
+                    (sections ?? []).map((section : FilterSectionScheme, index : number) => (
+                        <motion.section variants={SectionItemAnimation} initial={"initial"} animate={"fade"} custom={index} key={section.id}>
+                            <SectionItem
+                                section={section}
+                                hightlightBody={section.highlightBody}
+                                onSectionTitleEdit={(updatedSection) => handleSectionUpdate(section, updatedSection)}
+                                onSectionDelete={handleSectionDelete}
+                                key={section.id}
+                            />
+                        </motion.section>
                     ))
                 }
             </Flex>

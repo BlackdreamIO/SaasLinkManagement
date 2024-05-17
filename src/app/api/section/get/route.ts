@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from 'crypto';
 
-import { 
-    collection, 
-    getDocs,  
-} from 'firebase/firestore';
-import { db } from "@/database/firebaseConfig";
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from "@/database/firebase";
 
 // GET ALL DOCUMENT
-
 export async function GET(req : NextRequest) 
 {    
     if (req.method !== 'GET') {
-        return NextResponse.json({ statusCode: 405, message: 'Method Not Allowed' }); // Clear error message with appropriate status code
+        return NextResponse.json({ statusCode: 405, message: 'Method Not Allowed' });
     }
 
     try {
@@ -24,11 +20,11 @@ export async function GET(req : NextRequest)
             data: doc.data(),
         }));
 
-        return NextResponse.json({ documents });
+        return NextResponse.json(documents);
     }
     catch(error) 
     {
         console.error('Error fetching documents:', error);
-        return NextResponse.json({ statusCode: 500, message: 'Internal Server Error' }); // Informative error message
+        return NextResponse.json({ statusCode: 500, message: 'Internal Server Error' });
     }
 }

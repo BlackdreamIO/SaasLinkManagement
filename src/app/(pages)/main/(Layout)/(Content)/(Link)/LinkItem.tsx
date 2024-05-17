@@ -17,9 +17,12 @@ import {
 import { Box, Flex, HStack, Text } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Input } from "@/components/ui/input";
+import { useLinkContext } from "@/context/LinkContextAPI";
+import { updateLink } from "@/app/actions/link";
 
 export const LinkItem = (props : LinkProps) => {
-    const { id, title, url, created_at, handleTitleEdit, handleUrlEdit, handleDelete } = props;
+    
+    const { id, title, url, created_at, section  } = props;
 
     const [currentTitle, setCurrentTitle] = useState(title);
     const [newCurrentTitle, setNewCurrentTitle] = useState('');
@@ -34,72 +37,72 @@ export const LinkItem = (props : LinkProps) => {
     const [borderColor, setBorderColor] = useState('transparent');
 
     const editUrlRef = useRef<any>(null);
+    const { UpdateLink, DeleteLink } = useLinkContext()!;
 
     const currentTheme = useGetTheme();
     const isDarkMode = currentTheme == 'dark';
     
     const DropdownMenuItemStyle = `text-neutral-500 hover:!text-neutral-300 !bg-transparent transition-none`;
 
-    const handleToggleEditTitle = () => {
-        setEditTitle(!editTitle);
-        if(editTitle) {
-            setBorderColor(isDarkMode ? 'white' : 'black');
-            editUrlRef?.current?.focus();
-        }
-        setBorderColor('transparent');
-    }
-
-    const handleApplyTitle = (event? : any) => {
+    const handleApplyTitle = async(event? : any) => {
         if(event?.key == 'Enter') {
             setCurrentTitle(newCurrentTitle);
-            handleTitleEdit?.(newCurrentTitle);
             setEditTitle(false);
+            const updatedLink = {
+                id : id,
+                title : newCurrentTitle,
+                url : url,
+                created_at : created_at
+            }
+
+            await UpdateLink(section, updatedLink);
         }
         else if(!editTitle && event?.key == 'Esc') {
             setEditTitle(false);
         }
     }
 
-    const handleToggleEditUrl = () => {
-        setEditUrl(!editUrl);
-    }
-
-    const handleApplyUrl = (event? : any) => {
+    const handleApplyUrl = async (event? : any) => {
         if(event?.key == 'Enter') {
             setCurrentUrl(newUrl);
-            handleTitleEdit?.(newCurrentTitle);
             setEditUrl(false);
+
+            const updatedLink = {
+                id : id,
+                title : title,
+                url : newUrl,
+                created_at : created_at
+            }
+
+            await UpdateLink(section, updatedLink);
         }
         else if(!editUrl && event?.key == 'Escape') {
             setEditUrl(false);
         }
     }
 
-    const handleLinkDelete = () => {
+    const handleLinkDelete = async () => {
         setBorderColor('transparent');
         setHoverDelete(false);
+        const currentLink = {
+            id : id,
+            title : title,
+            url : url,
+            created_at : new Date()
+        }
+        await DeleteLink(section, currentLink);
     }
 
+    const handleToggleEditTitle = () => setEditTitle(!editTitle);
+    const handleToggleEditUrl = () => setEditUrl(!editUrl);
+
     useEffect(() => {
-        if(editTitle || editUrl) {
-            setBorderColor(isDarkMode ? 'skyblue' : 'red');
-        }
-        else if(!editTitle || !editUrl) {
-            setBorderColor('transparent');
-        }
-        if(contextMenuOpen) {
-            if(hoverDelete) {
-                setBorderColor('#ff2934');
-            }
-            else {
-                setBorderColor('gray');
-            }
-        }
-        else if(!contextMenuOpen) {
-            setBorderColor('transparent');
-        }
+        if(editTitle || editUrl) { setBorderColor(isDarkMode ? 'skyblue' : 'red'); }
+        else if(!editTitle || !editUrl) { setBorderColor('transparent'); }
+        
+        if(contextMenuOpen) { hoverDelete ? setBorderColor('#ff2934') : setBorderColor('gray'); }
+        else if(!contextMenuOpen) { setBorderColor('transparent'); }
     }, [editTitle, editUrl, hoverDelete, contextMenuOpen])
-    
 
     return (
         <ContextMenu onOpenChange={setContextMenuOpen}>
