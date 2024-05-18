@@ -64,7 +64,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
             }
         } 
         catch (error : any) {
-            console.log(error);
+            //console.log(error);
             throw new Error(error);
         }
     };
@@ -93,7 +93,6 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
             return response;
         } 
         catch (error : any) { 
-            console.log(error);
             throw new Error(error);
         }
     };
@@ -111,7 +110,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
                     return newContextSections;
                 }
                 else {
-                    console.error('Section not found');
+                    //console.error('Section not found');
                     return prevContextSections;
                 }
             });
@@ -119,7 +118,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
             const response = await updateSection(currentSection.id, updatedSection);            
 
             if(response.status == 200) {
-                console.log(response.message);
+                //console.log(response.message);
                 setOriginalContextSections(contextSections);
                 setServerOperationInterrupted(false);
             }
@@ -127,7 +126,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
                 setContextSections(originalContextSections);
                 await GetSections(true);
                 setServerOperationInterrupted(false);
-                console.error('ERR : ', response.message);
+                //console.error('ERR : ', response.message);
             }
         } 
         catch (error : any) {  

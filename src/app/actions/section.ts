@@ -56,8 +56,6 @@ export async function updateSection(currentSectionID : string, updatedSection : 
         newID : updatedSection.id,
         data : updatedSection.data
     }
-    console.log(bodyData);
-    
 
     const currentBodyData = currentSectionID === updatedSection.id ? bodyData : bodyDataWithTitleUpdate
 
