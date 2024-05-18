@@ -50,6 +50,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
     const CreateSection = async (newSection : SectionScheme) => {
         try 
         {
+            /*
             setServerOperationInterrupted(true);
             setContextSections(prev => [...prev, newSection]);
             const response : any = await createSection(newSection);
@@ -62,6 +63,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
                 await GetSections(true);
                 setServerOperationInterrupted(false);
             }
+            */
         } 
         catch (error : any) {
             //console.log(error);
@@ -73,6 +75,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
         if(localStorageSections.length > 0 && !revalidateFetch) return localStorageSections;
         try 
         {
+            /*
             setServerOperationInterrupted(true);
             setLocalStorageSections([]);
             const response : any[] = await getSections();
@@ -91,6 +94,9 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
                 setOriginalContextSections(response);
             }
             return response;
+            */
+
+            return [];
         } 
         catch (error : any) { 
             throw new Error(error);
@@ -100,6 +106,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
     const UpdateSection = async ({currentSection, updatedSection} : { currentSection : SectionScheme, updatedSection : SectionScheme }) => {
         try 
         {
+            /*
             setServerOperationInterrupted(true);
 
             setContextSections(prevContextSections => {
@@ -128,6 +135,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
                 setServerOperationInterrupted(false);
                 //console.error('ERR : ', response.message);
             }
+            */
         } 
         catch (error : any) {  
             RestoreContextSections();
@@ -144,6 +152,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
         setContextSections(prevSections => prevSections.filter((section) => section.id !== id));
         try 
         {
+            /*
             const currentTimeout = setTimeout(async () => {
                 const response = await deleteSection(id);
                 if(response.status == 200) {
@@ -158,6 +167,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
             }, 500);
 
             return () => clearTimeout(currentTimeout);
+            */
         } 
         catch (error : any) {
             RestoreContextSections();

@@ -31,6 +31,7 @@ export const LinkContextProvider = ({children} : LinkContextProviderProps) => {
     const CreateLink = async(currentSection : SectionScheme, newLink : LinkItemScheme) => {
         try 
         {
+            /*
             const sectionIndex = contextSections.findIndex(section => section.id === currentSection.id);
             if (sectionIndex == -1) {
                 console.error('parent section was not found');
@@ -66,6 +67,7 @@ export const LinkContextProvider = ({children} : LinkContextProviderProps) => {
                     console.error(`status code : ${response.status} | status message : ${response.message}`);
                 }
             }
+            */
         } 
         catch (error : any) {
             setServerOperationInterrupted(false);
@@ -81,6 +83,7 @@ export const LinkContextProvider = ({children} : LinkContextProviderProps) => {
     const DeleteLink = async(parentSection : SectionScheme, Link : LinkItemScheme) => {
         try 
         {
+            /*
             let tempContextSections = [...contextSections];
 
             const updatedSectionWithLink : SectionScheme[] = tempContextSections.map((section, index) => {
@@ -99,6 +102,7 @@ export const LinkContextProvider = ({children} : LinkContextProviderProps) => {
 
             const response = await deleteLink(parentSection, Link);
             response.status == 200 ? SaveContextSections() : RestoreContextSections();
+            */
         }
         catch (error : any) 
         {
