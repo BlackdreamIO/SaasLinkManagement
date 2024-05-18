@@ -7,18 +7,29 @@ export async function createSection(newSection : SectionScheme)
 {
     const url = 'http://localhost:3000/api/section/create';
 
-    const res = await fetch(url, {
-        method : 'POST',
-        cache : 'no-store',
-        headers: {'content-type':'application/json'},
-        body : JSON.stringify(newSection)
-    })
+    try 
+    {
+        const res = await fetch(url, {
+            method : 'POST',
+            cache : 'no-store',
+            headers: {'content-type':'application/json'},
+            body : JSON.stringify(newSection)
+        })
+    
+        if (!res.ok) {
+            throw new Error(`API request failed with status ${res.status}`);
+        }
 
-    const resJson = await res.json();
-
-    revalidatePath("/main");
-
-    return resJson;
+        const resJson = await res.json();
+    
+        revalidatePath("/main");
+    
+        return resJson;   
+    } 
+    catch (error : any) 
+    {
+        throw new Error('Error creating section:', error);
+    }
 }
 
 export async function getSections()

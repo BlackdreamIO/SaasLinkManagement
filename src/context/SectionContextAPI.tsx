@@ -48,26 +48,17 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
     const [enableFilterContextSections, setEnableFilterContextSections] = useState<boolean>(false);
 
     const CreateSection = async (newSection : SectionScheme) => {
-        try 
-        {
-            /*
+        setServerOperationInterrupted(true);
+        setContextSections(prev => [...prev, newSection]);
+        const response : any = await createSection(newSection);
+        if(response?.status == 200) {
+            SaveContextSections();
+            setServerOperationInterrupted(false);
+        }
+        else {
             setServerOperationInterrupted(true);
-            setContextSections(prev => [...prev, newSection]);
-            const response : any = await createSection(newSection);
-            if(response.status == 200) {
-                SaveContextSections();
-                setServerOperationInterrupted(false);
-            }
-            else {
-                setServerOperationInterrupted(true);
-                await GetSections(true);
-                setServerOperationInterrupted(false);
-            }
-            */
-        } 
-        catch (error : any) {
-            //console.log(error);
-            throw new Error(error);
+            await GetSections(true);
+            setServerOperationInterrupted(false);
         }
     };
 
