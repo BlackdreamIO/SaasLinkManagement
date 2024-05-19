@@ -25,6 +25,21 @@ export default function SectionContainer()
     const { contextSections, UpdateSection, DeleteSections, enableFilterContextSections, filteredContextSections } = useSectionContext()!; // ! non-null assertion
     const [sections, setSections] = useState<SectionScheme[]>([]);
 
+    useEffect(() => {
+        const fetchSections = async () => {
+            const respone = await fetch('http://localhost:3000/api/section/get', {
+                method : 'GET',
+                cache : 'no-store',
+                next : { revalidate : 0 }
+            })
+
+            const jsonResponse = await respone.json();
+            console.log(jsonResponse);
+        }
+        fetchSections();
+    }, [])
+    
+
     const handleSectionUpdate = async (currentSection : SectionScheme, updatedSection : SectionScheme) => {
         await UpdateSection({
             currentSection : currentSection,
