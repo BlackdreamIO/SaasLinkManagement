@@ -27,7 +27,7 @@ export default function SectionContainer()
 
     useEffect(() => {
         const fetchSections = async () => {
-            const respone = await fetch('http://localhost:3000/api/section/get', {
+            const respone = await fetch('/api/section/get', {
                 method : 'GET',
                 cache : 'no-store',
                 next : { revalidate : 0 }
