@@ -7,6 +7,7 @@ import { motion  } from 'framer-motion';
 
 import { Box, Flex } from "@chakra-ui/react";
 import { SectionItem } from "./SectionItem";
+import { getSections } from '@/app/actions/section';
 
 const SectionItemAnimation = {
     initial : {
@@ -27,14 +28,8 @@ export default function SectionContainer()
 
     useEffect(() => {
         const fetchSections = async () => {
-            const respone = await fetch('/api/section/get', {
-                method : 'GET',
-                cache : 'no-store',
-                next : { revalidate : 0 }
-            })
-
-            const jsonResponse = await respone.json();
-            console.log(jsonResponse);
+            const respone = await getSections();
+            console.log(respone);
         }
         fetchSections();
     }, [])

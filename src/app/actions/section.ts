@@ -1,37 +1,77 @@
 "use server"
 
-import { SectionScheme } from "@/scheme/SectionScheme";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { SectionScheme } from "@/scheme/SectionScheme";
 
-export async function createSection(newSection : SectionScheme)
-{
-    const url = 'http://localhost:3000/api/section/create';
+import { collection, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore';
+import { db } from "@/database/firebase";
 
-    try 
-    {
-        const res = await fetch(url, {
-            method : 'POST',
-            cache : 'no-store',
-            headers: {'content-type':'application/json'},
-            body : JSON.stringify(newSection)
-        })
+export async function createSection(newSection : SectionScheme) {
+    try {
+        const collectionReferance = collection(db, 'document');
+        const newDocRef = doc(db, collectionReferance.id, newSection.id);
     
-        if (!res.ok) {
-            throw new Error(`API request failed with status ${res.status}`);
-        }
-
-        const resJson = await res.json();
-    
-        revalidatePath("/main");
-    
-        return resJson;   
+        // create document with default document data {}
+        const newDoc = await setDoc(newDocRef, {});
+        return newDoc
     } 
-    catch (error : any) 
-    {
-        throw new Error('Error creating section:', error);
+    catch (error) {
+        console.error('Error fetching documents:', error);
+        return [];
     }
 }
 
+export async function getSections() {
+    try {
+        const documentsCollectionRef = collection(db, 'document');
+        const documentsSnapshot = await getDocs(documentsCollectionRef);
+        
+        const documents = documentsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+        }));
+
+        revalidatePath('/');
+
+        return documents
+    }
+    catch(error) 
+    {
+        console.error('Error fetching documents:', error);
+        return [];
+    }
+}
+
+// export async function createSection(newSection : SectionScheme)
+// {
+//     const url = 'https://saas-link-management.vercel.app/main/api/section/create';
+
+//     try 
+//     {
+//         const res = await fetch(url, {
+//             method : 'POST',
+//             cache : 'no-store',
+//             headers: {'content-type':'application/json'},
+//             body : JSON.stringify(newSection)
+//         })
+    
+//         if (!res.ok) {
+//             throw new Error(`API request failed with status ${res.status}`);
+//         }
+
+//         const resJson = await res.json();
+    
+//         revalidatePath("/main");
+    
+//         return resJson;   
+//     } 
+//     catch (error : any) 
+//     {
+//         throw new Error('Error creating section:', error);
+//     }
+// }
+
+/*
 export async function getSections()
 {
     const url = 'http://localhost:3000/api/section/get';
@@ -100,3 +140,4 @@ export async function deleteSection(deleteSectionID : string )
     return responseJson;
 }
 
+*/

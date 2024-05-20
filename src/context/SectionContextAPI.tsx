@@ -2,10 +2,12 @@
 
 import { createContext, useContext, useState, Dispatch, SetStateAction, ReactNode, useEffect } from 'react';
 import { FilterSectionScheme, SectionScheme } from '@/scheme/SectionScheme';
-import { createSection, deleteSection, getSections, updateSection } from '@/app/actions/section';
+import { createSection } from '@/app/actions/section';
 import { CheckArrayEquality } from '@/globalFunction/CheckArrayEquality';
 import useLocalStorage from '@/hook/useLocalStorage';
 import { LinkItemScheme } from '@/scheme/LinkSection';
+
+export const dynamic = 'force-dynamic';
 
 interface SectionContextData {
     contextSections: SectionScheme[];
@@ -48,18 +50,18 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
     const [enableFilterContextSections, setEnableFilterContextSections] = useState<boolean>(false);
 
     const CreateSection = async (newSection : SectionScheme) => {
-        // setServerOperationInterrupted(true);
-        // setContextSections(prev => [...prev, newSection]);
-        // const response : any = await createSection(newSection);
-        // if(response?.status == 200) {
-        //     SaveContextSections();
-        //     setServerOperationInterrupted(false);
-        // }
-        // else {
-        //     setServerOperationInterrupted(true);
-        //     await GetSections(true);
-        //     setServerOperationInterrupted(false);
-        // }
+        setServerOperationInterrupted(true);
+        setContextSections(prev => [...prev, newSection]);
+        const response : any = await createSection(newSection);
+        if(response?.status == 200) {
+            SaveContextSections();
+            setServerOperationInterrupted(false);
+        }
+        else {
+            setServerOperationInterrupted(true);
+            await GetSections(true);
+            setServerOperationInterrupted(false);
+        }
     };
 
     const GetSections = async (revalidateFetch? : boolean) => {
@@ -174,8 +176,8 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
     }
 
     const handleServerOperationInterrupted = async () => {
-        const latestSections = await getSections();
-        
+        const latestSections = ['hey djwaid']; //await getSections();
+        /*
         if(latestSections.length < 1) {
             console.warn('serverOperationInterruptEvenet : [data did not fetched]');
             return;
@@ -189,6 +191,7 @@ export const SectionContextProvider = ({children} : SectionContextProviderProps)
             console.log("GETTING NEW DATA");
             await GetSections(true);
         }
+        */
     }
 
     useEffect(() => {
